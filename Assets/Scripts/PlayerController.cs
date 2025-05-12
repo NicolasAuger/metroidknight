@@ -12,14 +12,21 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float walkSpeed = 1;
     private float xAxis;
 
-    [Header("GroundCheck Settings")]
+    [Header("Vertical Movement Settings")]
     [SerializeField] private float jumpForce = 45;
     [SerializeField] private Transform groundCheckPoint;
     [SerializeField] private float groundCheckY = 0.2f;
     [SerializeField] private float groundCheckX = 0.5f;
     [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private int jumpBufferFrames;
+    [SerializeField] private float coyoteTime;
+    [SerializeField] private int maxAirJumps;
+    private int jumpBufferCounter = 0;
+    private float coyoteTimeCounter = 0;
+    private int airJumpCounter = 0;
 
     public static PlayerController Instance;
+    PlayerStateList pState;
 
     private void Awake()
     {
@@ -35,6 +42,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        pState = GetComponent<PlayerStateList>();
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
     }
@@ -43,8 +51,9 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         GetInputs();
-        Move();
+        UpdateJumpVariables();
         Flip();
+        Move();
         Jump();
     }
 
@@ -81,14 +90,40 @@ public class PlayerController : MonoBehaviour
         // Variable jump height
         if (Input.GetButtonUp("Jump") && rb.velocity.y > 0) {
             rb.velocity = new Vector2(rb.velocity.x, 0);
+            pState.jumping = false;
         }
 
         // Jump only if the player is grounded
-        if (Input.GetButtonDown("Jump") && Grounded()) {
-            rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+        if (!pState.jumping) {
+            if (jumpBufferCounter > 0 && coyoteTimeCounter > 0) {
+                rb.velocity = new Vector3(rb.velocity.x, jumpForce);
+                pState.jumping = true;
+            } else if (!Grounded() && airJumpCounter < maxAirJumps && Input.GetButtonDown("Jump")) {
+                pState.jumping = true;
+                airJumpCounter++;
+                rb.velocity = new Vector3(rb.velocity.x, jumpForce);
+            }
         }
 
         animator.SetBool("Jumping", !Grounded());
+    }
+
+    void UpdateJumpVariables() {
+        if (Grounded()) {
+            pState.jumping = false;
+            coyoteTimeCounter = coyoteTime;
+            airJumpCounter = 0;
+        } else {
+            // Time.deltaTime is the time between frames
+            // So we decrease coyoteTimeCounter by 1 every second
+            coyoteTimeCounter -= Time.deltaTime;
+        }
+
+        if (Input.GetButtonDown("Jump")) {
+            jumpBufferCounter = jumpBufferFrames;
+        } else {
+            jumpBufferCounter--;
+        }
     }
 
 }
