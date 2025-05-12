@@ -30,6 +30,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject dashEffect;
     [Space(5)]
 
+    [Header("Attack Settings")]
+    bool attacking;
+    float timeBetweenAttack, timeSinceLastAttack;
+
 
     PlayerStateList pState;
     private Rigidbody2D rb;
@@ -72,11 +76,13 @@ public class PlayerController : MonoBehaviour
         Move();
         Jump();
         StartDash();
+        Attack();
     }
 
     void GetInputs()
     {
         xAxis = Input.GetAxisRaw("Horizontal");
+        attacking = Input.GetMouseButtonDown(0);
     }
 
     private void Move() {
@@ -159,7 +165,7 @@ public class PlayerController : MonoBehaviour
     IEnumerator Dash() {
         canDash = false;
         pState.dashing = true;
-        animator.SetBool("Dashing", true);
+        animator.SetTrigger("Dashing");
         rb.gravityScale = 0;
         if (lookingLeft) {
             rb.velocity = new Vector2(-transform.localScale.x * dashSpeed, 0);
@@ -170,9 +176,16 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(dashTime);
         rb.gravityScale = gravity;
         pState.dashing = false;
-        animator.SetBool("Dashing", false);
         yield return new WaitForSeconds(dashCooldown);
         canDash = true;
+    }
+
+    void Attack() {
+        timeSinceLastAttack += Time.deltaTime;
+        if (attacking && timeSinceLastAttack >= timeBetweenAttack) {
+            timeSinceLastAttack = 0;
+            animator.SetTrigger("Attacking");
+        }
     }
 
 }
