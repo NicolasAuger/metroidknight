@@ -177,7 +177,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.02302982, y: -0.48938304}
+  m_Offset: {x: 0.023029804, y: -0.47730315}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -188,7 +188,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.9539404, y: 1.5181705}
+  m_Size: {x: 0.9539404, y: 1.4940107}
   m_EdgeRadius: 0
 --- !u!212 &16547540
 SpriteRenderer:
@@ -278,9 +278,13 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
-  jumpBufferFrames: 30
+  jumpBufferFrames: 0.2
   coyoteTime: 0.1
   maxAirJumps: 1
+  dashSpeed: 45
+  dashTime: 0.2
+  dashCooldown: 0.35
+  dashEffect: {fileID: 3702993741222916020, guid: 828eed02980a4406b8ac7f85c0193d6b, type: 3}
 --- !u!50 &16547543
 Rigidbody2D:
   serializedVersion: 4
@@ -342,6 +346,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   jumping: 0
+  dashing: 0
 --- !u!1 &164668315
 GameObject:
   m_ObjectHideFlags: 0
@@ -731,7 +736,7 @@ Transform:
   m_GameObject: {fileID: 685895035}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.213, z: 0}
+  m_LocalPosition: {x: 0, y: -1.221, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
