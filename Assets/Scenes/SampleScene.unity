@@ -308,6 +308,7 @@ MonoBehaviour:
   maxHealth: 10
   bloodSpurt: {fileID: 5737303807592839246, guid: f84b8e0488c8a4cbebf4ec66972b7545, type: 3}
   hitFlashSpeed: 3
+  timeToHeal: 1.5
   pState: {fileID: 0}
 --- !u!50 &16547543
 Rigidbody2D:
@@ -375,6 +376,7 @@ MonoBehaviour:
   recoilingY: 0
   lookingRight: 1
   invincible: 0
+  healing: 0
 --- !u!1 &68428751
 GameObject:
   m_ObjectHideFlags: 0

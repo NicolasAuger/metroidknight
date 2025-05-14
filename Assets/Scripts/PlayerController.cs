@@ -60,6 +60,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float hitFlashSpeed;
     public delegate void OnHealthChangedDelegate();
     [HideInInspector] public OnHealthChangedDelegate onHealthChangedCallback;
+    float healTimer;
+    [SerializeField] float timeToHeal;
+
     [Space(5)]
 
     [HideInInspector] public PlayerStateList pState;
@@ -119,6 +122,7 @@ public class PlayerController : MonoBehaviour
         Attack();
         RestoreTimeScale();
         FlashWhenInvincible();
+        Heal();
     }
 
     private void FixedUpdate() {
@@ -372,6 +376,24 @@ public class PlayerController : MonoBehaviour
 
     void FlashWhenInvincible() {
         sr.material.color = pState.invincible ? Color.Lerp(Color.white, Color.black, Mathf.PingPong(Time.time * hitFlashSpeed, 1f)) : Color.white;
+    }
+
+    void Heal() {
+        if (Input.GetButton("Healing") && Health < maxHealth && !pState.jumping && !pState.dashing) {
+            pState.healing = true;
+            animator.SetBool("Healing", true);
+
+            // Healing
+            healTimer += Time.deltaTime;
+            if (healTimer >= timeToHeal) {
+                Health++;
+                healTimer = 0;
+            }
+        } else {
+            pState.healing = false;
+            healTimer = 0;
+            animator.SetBool("Healing", false);
+        }
     }
 
     private void OnDrawGizmos()
