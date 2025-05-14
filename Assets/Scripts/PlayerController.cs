@@ -4,11 +4,11 @@ using UnityEngine;
 namespace Metroknight {
 public class PlayerController : MonoBehaviour
 {
-    [Header("Horizontal Movement Settings")]
+    [Header("Horizontal Movement")]
     [SerializeField] private float walkSpeed = 1;
     [Space(5)]
 
-    [Header("Vertical Movement Settings")]
+    [Header("Vertical Movement")]
     [SerializeField] private float jumpForce = 45;
     [SerializeField] private Transform groundCheckPoint;
     [SerializeField] private float groundCheckY = 0.2f;
@@ -23,26 +23,43 @@ public class PlayerController : MonoBehaviour
     [Space(5)]
 
 
-    [Header("Dash Settings")]
+    [Header("Dash")]
     [SerializeField] private float dashSpeed;
     [SerializeField] private float dashTime;
     [SerializeField] private float dashCooldown;
     [SerializeField] GameObject dashEffect;
     [Space(5)]
 
-    [Header("Attack Settings")]
+    [Header("Attack")]
+    [SerializeField] float damage;
+    [SerializeField] LayerMask attackableLayer;
+    [SerializeField] Transform sideAttackTransform, upAttackTransform, downAttackTransform;
+    [SerializeField] Vector2 sideAttackArea, upAttackArea, downAttackArea;
+    [SerializeField] GameObject slashEffect;
     bool attacking;
     float timeBetweenAttack, timeSinceLastAttack;
+    [Space(5)]
 
+    [Header("Recoil")]
+    [SerializeField] int recoilXSteps = 5;
+    [SerializeField] int recoilYSteps = 5;
+    [SerializeField] float recoilXSpeed = 100;
+    [SerializeField] float recoilYSpeed = 100;
+    int stepsXRecoiled, stepsYRecoiled;
+    [Space(5)]
 
-    PlayerStateList pState;
+    [Header("Health")]
+    public int health;
+    public int maxHealth;
+    [Space(5)]
+
+    [HideInInspector] public PlayerStateList pState;
     private Rigidbody2D rb;
     private Animator animator;
     private float gravity;
-    private float xAxis;
+    private float xAxis, yAxis;
     private bool canDash = true;
     private bool dashed;
-    private bool lookingLeft;
 
     public static PlayerController Instance;
 
@@ -54,7 +71,7 @@ public class PlayerController : MonoBehaviour
       } else {
         Instance = this;
       }
-      
+      health = maxHealth;
     }
 
     // Start is called before the first frame update
@@ -77,11 +94,13 @@ public class PlayerController : MonoBehaviour
         Jump();
         StartDash();
         Attack();
+        Recoil();
     }
 
     void GetInputs()
     {
         xAxis = Input.GetAxisRaw("Horizontal");
+        yAxis = Input.GetAxisRaw("Vertical");
         attacking = Input.GetMouseButtonDown(0);
     }
 
@@ -103,11 +122,13 @@ public class PlayerController : MonoBehaviour
     void Flip() {
         // Flip the player using the Y euler rotation angle based on the xAxis
         if (xAxis > 0) {
+            // Right
             transform.eulerAngles = new Vector3(0, 0, 0);
-            lookingLeft = false;
+            pState.lookingRight = true;
         } else if (xAxis < 0) {
+            // Left
             transform.eulerAngles = new Vector3(0, 180, 0);
-            lookingLeft = true;
+            pState.lookingRight = false;
         }
     }
 
@@ -167,10 +188,10 @@ public class PlayerController : MonoBehaviour
         pState.dashing = true;
         animator.SetTrigger("Dashing");
         rb.gravityScale = 0;
-        if (lookingLeft) {
-            rb.velocity = new Vector2(-transform.localScale.x * dashSpeed, 0);
-        } else {
+        if (pState.lookingRight) {
             rb.velocity = new Vector2(transform.localScale.x * dashSpeed, 0);
+        } else {
+            rb.velocity = new Vector2(-transform.localScale.x * dashSpeed, 0);
         }
         if (Grounded()) Instantiate(dashEffect, transform);
         yield return new WaitForSeconds(dashTime);
@@ -185,8 +206,117 @@ public class PlayerController : MonoBehaviour
         if (attacking && timeSinceLastAttack >= timeBetweenAttack) {
             timeSinceLastAttack = 0;
             animator.SetTrigger("Attacking");
+
+            if (yAxis == 0 || yAxis < 0 && Grounded()) {
+                Hit(sideAttackTransform, sideAttackArea, ref pState.recoilingX, recoilXSpeed);
+                Instantiate(slashEffect, sideAttackTransform);
+                // slashEffect.transform.localScale = new Vector2(transform.localScale.x, transform.localScale.y);
+            } else if (yAxis > 0) {
+                Hit(upAttackTransform, upAttackArea, ref pState.recoilingY, recoilYSpeed);
+                SlashEffectAtAngle(slashEffect, 90, upAttackTransform);
+            } else if (yAxis < 0 && !Grounded()) {
+                Hit(downAttackTransform, downAttackArea, ref pState.recoilingY, recoilYSpeed);
+                SlashEffectAtAngle(slashEffect, -90, downAttackTransform);
+            }
+        }
+
+    }
+
+    private void Hit(Transform _attackTransform, Vector2 _attackArea, ref bool _recoildDir, float _recoilStrength) {
+        Collider2D[] objectsToHit = Physics2D.OverlapBoxAll(_attackTransform.position, _attackArea, 0, attackableLayer);
+        
+        if (objectsToHit.Length > 0) {
+            _recoildDir = true;
+        }
+        for (int i = 0; i < objectsToHit.Length; i++) {
+            if (objectsToHit[i].GetComponent<Enemy>() != null) {
+                objectsToHit[i].GetComponent<Enemy>().EnemyHit(damage, (transform.position - objectsToHit[i].transform.position).normalized, _recoilStrength);
+            }
         }
     }
 
-}
+    void SlashEffectAtAngle(GameObject _slashEffect, int _effectAngle, Transform _attackTransform) {
+       _slashEffect = Instantiate(_slashEffect, _attackTransform);
+       _slashEffect.transform.eulerAngles = new Vector3(0, 0, _effectAngle);
+       _slashEffect.transform.localScale = new Vector2(transform.localScale.x, transform.localScale.y);
+    }
+
+    void Recoil() {
+        if (pState.recoilingX) {
+            if (pState.lookingRight) {
+                rb.velocity = new Vector2(-recoilXSpeed, 0);
+            } else {
+                rb.velocity = new Vector2(recoilXSpeed, 0);
+            }
+        }
+
+        if (pState.recoilingY) {
+            rb.gravityScale = 0;
+            if (yAxis < 0) {
+                rb.velocity = new Vector2(rb.velocity.x, recoilYSpeed);
+            } else if (yAxis > 0) {
+                rb.velocity = new Vector2(rb.velocity.x, -recoilYSpeed);
+            }
+
+            // Might fix the air jump bug not being reset while y recoiling
+            airJumpCounter = 0;
+            pState.jumping = false;
+        } else {
+            rb.gravityScale = gravity;
+        }
+
+        // Stop recoiling
+        if (pState.recoilingX && stepsXRecoiled < recoilXSteps) {
+            stepsXRecoiled++;
+        } else {
+            StopRecoilX();
+        }
+        if (pState.recoilingY && stepsYRecoiled < recoilYSteps) {
+            stepsYRecoiled++;
+        } else {
+            StopRecoilY();
+        }
+
+        if (Grounded()) {
+            StopRecoilY();
+        }
+    }
+
+    void StopRecoilX() {
+        stepsXRecoiled = 0;
+        pState.recoilingX = false;
+    }
+
+    void StopRecoilY() {
+        stepsYRecoiled = 0;
+        pState.recoilingY = false;
+    }
+
+    public void TakeDamage(float _damage) {
+        print("Take damage: " + _damage);
+        health -= Mathf.RoundToInt(_damage);
+        StartCoroutine(StopTakingDamage());
+    }
+
+    IEnumerator StopTakingDamage() {
+        pState.invincible = true;
+        animator.SetTrigger("Damaged");
+        ClampHealth();
+        yield return new WaitForSeconds(1f);
+        pState.invincible = false;
+    }
+
+    void ClampHealth() {
+        health = Mathf.Clamp(health, 0, maxHealth);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireCube(sideAttackTransform.position, sideAttackArea);
+        Gizmos.DrawWireCube(upAttackTransform.position, upAttackArea);
+        Gizmos.DrawWireCube(downAttackTransform.position, downAttackArea);
+    }
+
+  }
 }
