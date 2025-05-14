@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Metroknight {
 public class PlayerController : MonoBehaviour
@@ -63,6 +63,25 @@ public class PlayerController : MonoBehaviour
     float healTimer;
     [SerializeField] float timeToHeal;
 
+    [Header("Mana")]
+    [SerializeField] Image manaStorage;
+    [SerializeField] private float mana;
+    [SerializeField] private float manaDrainSpeed;
+    [SerializeField] private float manaGain;
+    [Space(5)]
+
+    [Header("Spell Casting")]
+    [SerializeField] float manaSpellCost = 0.3f;
+    [SerializeField] float timeBetweenCast = 0.5f;
+    float timeSinceLastCast;
+    [SerializeField] float spellDamage; // Up & down only
+    [SerializeField] float downSpellForce; // down only
+
+    // SpellCast objects
+    [SerializeField] GameObject sideSpellFireball;
+    [SerializeField] GameObject upSpellExplosion;
+    [SerializeField] GameObject downSpellFireball;
+
     [Space(5)]
 
     [HideInInspector] public PlayerStateList pState;
@@ -82,6 +101,16 @@ public class PlayerController : MonoBehaviour
                 if (onHealthChangedCallback != null) {
                     onHealthChangedCallback.Invoke();
                 }
+            }
+        }
+    }
+
+    public float Mana {
+        get { return mana; }
+        set {
+            if (mana != value) {
+                mana = Mathf.Clamp(value, 0, 1);
+                manaStorage.fillAmount = mana;
             }
         }
     }
@@ -107,6 +136,9 @@ public class PlayerController : MonoBehaviour
         animator = GetComponent<Animator>();
         sr = GetComponent<SpriteRenderer>();
         gravity = rb.gravityScale;
+
+        Mana = mana;
+        manaStorage.fillAmount = Mana;
     }
 
     // Update is called once per frame
@@ -123,6 +155,14 @@ public class PlayerController : MonoBehaviour
         RestoreTimeScale();
         FlashWhenInvincible();
         Heal();
+        CastSpells();
+    }
+
+    private void OnTriggerEnter2D(Collider2D _other) // For up & down spells
+    {
+      if (_other.GetComponent<Enemy>() != null && pState.casting) {
+        _other.GetComponent<Enemy>().EnemyHit(spellDamage, (_other.transform.position - transform.position).normalized, -recoilYSpeed);
+      }
     }
 
     private void FixedUpdate() {
@@ -271,6 +311,10 @@ public class PlayerController : MonoBehaviour
             if (e && !hitEnemies.Contains(e)) {
                 e.EnemyHit(damage, (transform.position - objectsToHit[i].transform.position).normalized, _recoilStrength);
                 hitEnemies.Add(e);
+
+                if (objectsToHit[i].CompareTag("Enemy")) {
+                    Mana += manaGain;
+                }
             }
         }
     }
@@ -379,7 +423,7 @@ public class PlayerController : MonoBehaviour
     }
 
     void Heal() {
-        if (Input.GetButton("Healing") && Health < maxHealth && !pState.jumping && !pState.dashing) {
+        if (Input.GetButton("Healing") && Health < maxHealth && Mana > 0 && !pState.jumping && !pState.dashing) {
             pState.healing = true;
             animator.SetBool("Healing", true);
 
@@ -389,11 +433,68 @@ public class PlayerController : MonoBehaviour
                 Health++;
                 healTimer = 0;
             }
+
+            // Drain mana
+            Mana -= Time.deltaTime * manaDrainSpeed;;
         } else {
             pState.healing = false;
             healTimer = 0;
             animator.SetBool("Healing", false);
         }
+    }
+
+    void CastSpells() {
+        if (Input.GetButtonDown("CastSpell") && Mana >= manaSpellCost && timeSinceLastCast >= timeBetweenCast) {
+            pState.casting = true;
+            timeSinceLastCast = 0;
+            StartCoroutine(CastCoroutine());
+        } else {
+            timeSinceLastCast += Time.deltaTime;
+        }
+
+        // Disable down spell fireball if the player reaches the ground
+        if (Grounded()) {
+            downSpellFireball.SetActive(false);
+        }
+
+        // If down spell fireball is active, force player to go down till the ground
+        if (downSpellFireball.activeInHierarchy) {
+            rb.velocity += downSpellForce * Vector2.down;
+        }
+    }
+
+    IEnumerator CastCoroutine() {
+        animator.SetBool("Casting", true);
+        yield return new WaitForSeconds(0.15f);
+
+        // Side cast
+        if (yAxis == 0 || (yAxis < 0 && Grounded())) {
+            GameObject _fireball = Instantiate(sideSpellFireball, sideAttackTransform.position, Quaternion.identity);
+
+            // Flip fireball
+            if (pState.lookingRight) {
+                _fireball.transform.eulerAngles = Vector3.zero;
+            } else {
+                _fireball.transform.eulerAngles = new Vector2(_fireball.transform.eulerAngles.x, 180);
+            }
+            pState.recoilingX = true;
+        }
+
+        // Up cast
+        else if (yAxis > 0) {
+            Instantiate(upSpellExplosion, transform);
+            rb.velocity = Vector2.zero;
+        }
+
+        // Down cast
+        else if (yAxis < 0 && !Grounded()) {
+            downSpellFireball.SetActive(true);
+        }
+
+        Mana -= manaSpellCost;
+        yield return new WaitForSeconds(0.35f);
+        animator.SetBool("Casting", false);
+        pState.casting = false;
     }
 
     private void OnDrawGizmos()

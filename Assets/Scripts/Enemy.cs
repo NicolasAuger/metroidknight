@@ -44,7 +44,6 @@ public class Enemy : MonoBehaviour
     }
 
     public virtual void EnemyHit(float _damageDone, Vector2 _hitDirection, float _hitForce) {
-        print("damage done: " + _damageDone);
         health -= _damageDone;
 
         if (!isRecoiling) {

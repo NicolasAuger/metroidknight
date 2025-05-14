@@ -21,10 +21,6 @@ public class HeartController : MonoBehaviour
         heartContainers = new GameObject[PlayerController.Instance.maxHealth];
         heartFills = new Image[PlayerController.Instance.maxHealth];
 
-        Debug.Log("HeartController: " + PlayerController.Instance.maxHealth);
-        Debug.Log("HeartsContainer: " + heartContainers.Length);
-        Debug.Log("HeartsFill: " + heartFills.Length);
-
         PlayerController.Instance.onHealthChangedCallback += UpdateHeartHUD;
         InstantiateHeartContainers();
         UpdateHeartHUD();
