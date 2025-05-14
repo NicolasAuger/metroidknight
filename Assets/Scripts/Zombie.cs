@@ -4,8 +4,6 @@ using UnityEngine;
 namespace Metroknight {
 public class Zombie : Enemy
 {
-    private bool stopMoovingAfterTouchingPlayer = false;
-
     void Start()
     {
       rb.gravityScale = 12f;
@@ -30,18 +28,10 @@ public class Zombie : Enemy
 
     protected override void OnTriggerStay2D(Collider2D _other) {
         base.OnTriggerStay2D(_other);
-        if (_other.CompareTag("Player")) {
-            stopMoovingAfterTouchingPlayer = true;
-            rb.velocity = Vector2.zero;
-            rb.gravityScale = 0f;
-            StartCoroutine(ProceedToChase());
-        }
-    }
-
-    IEnumerator ProceedToChase() {
-      yield return new WaitForSeconds(0.5f);
-      stopMoovingAfterTouchingPlayer = false;
-      rb.gravityScale = 12f;
+        // if (_other.CompareTag("Player")) {
+        //     rb.velocity = Vector2.zero;
+        //     rb.gravityScale = 0f;
+        // }
     }
   }
 }

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Metroknight {
@@ -40,6 +41,8 @@ public class PlayerController : MonoBehaviour
     bool attacking;
     [SerializeField] private float timeBetweenAttack;
     private float timeSinceLastAttack;
+    bool restoreTime;
+    float restoreTimeSpeed;
     [Space(5)]
 
     [Header("Recoil")]
@@ -53,6 +56,10 @@ public class PlayerController : MonoBehaviour
     [Header("Health")]
     public int health;
     public int maxHealth;
+    [SerializeField] GameObject bloodSpurt;
+    [SerializeField] float hitFlashSpeed;
+    public delegate void OnHealthChangedDelegate();
+    [HideInInspector] public OnHealthChangedDelegate onHealthChangedCallback;
     [Space(5)]
 
     [HideInInspector] public PlayerStateList pState;
@@ -62,6 +69,19 @@ public class PlayerController : MonoBehaviour
     private float xAxis, yAxis;
     private bool canDash = true;
     private bool dashed;
+    private SpriteRenderer sr;
+
+    public int Health {
+        get { return health; }
+        set {
+            if (health != value) {
+                health = Mathf.Clamp(value, 0, maxHealth);
+                if (onHealthChangedCallback != null) {
+                    onHealthChangedCallback.Invoke();
+                }
+            }
+        }
+    }
 
     public static PlayerController Instance;
 
@@ -73,7 +93,7 @@ public class PlayerController : MonoBehaviour
       } else {
         Instance = this;
       }
-      health = maxHealth;
+      Health = maxHealth;
     }
 
     // Start is called before the first frame update
@@ -82,6 +102,7 @@ public class PlayerController : MonoBehaviour
         pState = GetComponent<PlayerStateList>();
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        sr = GetComponent<SpriteRenderer>();
         gravity = rb.gravityScale;
     }
 
@@ -96,6 +117,12 @@ public class PlayerController : MonoBehaviour
         Jump();
         StartDash();
         Attack();
+        RestoreTimeScale();
+        FlashWhenInvincible();
+    }
+
+    private void FixedUpdate() {
+        if (pState.dashing) return;
         Recoil();
     }
 
@@ -103,7 +130,7 @@ public class PlayerController : MonoBehaviour
     {
         xAxis = Input.GetAxisRaw("Horizontal");
         yAxis = Input.GetAxisRaw("Vertical");
-        attacking = Input.GetMouseButtonDown(0);
+        attacking = Input.GetButtonDown("Attack");
     }
 
     private void Move() {
@@ -302,21 +329,49 @@ public class PlayerController : MonoBehaviour
     }
 
     public void TakeDamage(float _damage) {
-        print("Take damage: " + _damage);
-        health -= Mathf.RoundToInt(_damage);
+        Health -= Mathf.RoundToInt(_damage);
         StartCoroutine(StopTakingDamage());
     }
 
     IEnumerator StopTakingDamage() {
+        GameObject _bloodSpurtParticles = Instantiate(bloodSpurt, transform.position, Quaternion.identity);
+        Destroy(_bloodSpurtParticles, 1.5f);
         pState.invincible = true;
         animator.SetTrigger("Damaged");
-        ClampHealth();
         yield return new WaitForSeconds(1f);
         pState.invincible = false;
     }
 
-    void ClampHealth() {
-        health = Mathf.Clamp(health, 0, maxHealth);
+    void RestoreTimeScale() {
+        if (restoreTime) {
+            if (Time.timeScale < 1) {
+                Time.timeScale += restoreTimeSpeed * Time.deltaTime;
+            } else {
+                Time.timeScale = 1;
+                restoreTime = false;
+            }
+        }
+    }
+
+    public void HitStopTime(float _newTimeScale, int _restoreSpeed, float _delay) {
+        restoreTimeSpeed = _restoreSpeed;
+        Time.timeScale = _newTimeScale;
+
+        if (_delay > 0) {
+            StopCoroutine(RestoreTime(_delay));
+            StartCoroutine(RestoreTime(_delay));
+        } else {
+            restoreTime = true;
+        }
+    }
+
+    IEnumerator RestoreTime(float _delay) {
+        restoreTime = true;
+        yield return new WaitForSeconds(_delay);
+    }
+
+    void FlashWhenInvincible() {
+        sr.material.color = pState.invincible ? Color.Lerp(Color.white, Color.black, Mathf.PingPong(Time.time * hitFlashSpeed, 1f)) : Color.white;
     }
 
     private void OnDrawGizmos()
