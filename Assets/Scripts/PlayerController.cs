@@ -226,13 +226,20 @@ public class PlayerController : MonoBehaviour
 
     private void Hit(Transform _attackTransform, Vector2 _attackArea, ref bool _recoildDir, float _recoilStrength) {
         Collider2D[] objectsToHit = Physics2D.OverlapBoxAll(_attackTransform.position, _attackArea, 0, attackableLayer);
-        
+
+        // Save the enemies that have been hit
+        List<Enemy> hitEnemies = new List<Enemy>();
+
         if (objectsToHit.Length > 0) {
             _recoildDir = true;
         }
         for (int i = 0; i < objectsToHit.Length; i++) {
-            if (objectsToHit[i].GetComponent<Enemy>() != null) {
-                objectsToHit[i].GetComponent<Enemy>().EnemyHit(damage, (transform.position - objectsToHit[i].transform.position).normalized, _recoilStrength);
+            Enemy e = objectsToHit[i].GetComponent<Enemy>();
+
+            // This is to prevent the player from hitting the same enemy multiple times in one attack
+            if (e && !hitEnemies.Contains(e)) {
+                e.EnemyHit(damage, (transform.position - objectsToHit[i].transform.position).normalized, _recoilStrength);
+                hitEnemies.Add(e);
             }
         }
     }
