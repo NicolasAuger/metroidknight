@@ -49,10 +49,11 @@ public class Enemy : MonoBehaviour
 
         if (!isRecoiling) {
             rb.AddForce(-_hitForce * recoilFactor * _hitDirection);
+            isRecoiling = true;
         }
     }
 
-    protected void OnTriggerStay2D(Collider2D _other) {
+    protected virtual void OnTriggerStay2D(Collider2D _other) {
         if (_other.CompareTag("Player") && !PlayerController.Instance.pState.invincible) {
             Attack();
         }
