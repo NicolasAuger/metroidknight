@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Metroknight {
@@ -37,7 +38,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Vector2 sideAttackArea, upAttackArea, downAttackArea;
     [SerializeField] GameObject slashEffect;
     bool attacking;
-    float timeBetweenAttack, timeSinceLastAttack;
+    [SerializeField] private float timeBetweenAttack;
+    private float timeSinceLastAttack;
     [Space(5)]
 
     [Header("Recoil")]

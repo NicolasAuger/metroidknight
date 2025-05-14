@@ -140,7 +140,7 @@ GameObject:
   - component: {fileID: 16547544}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -299,6 +299,7 @@ MonoBehaviour:
   upAttackArea: {x: 1.4, y: 1.4}
   downAttackArea: {x: 1.4, y: 1.4}
   slashEffect: {fileID: 4390498643010443790, guid: 3b0b3ceca73744ed79eba778eebc44d4, type: 3}
+  timeBetweenAttack: 0.4
   recoilXSteps: 5
   recoilYSteps: 5
   recoilXSpeed: 100
