@@ -15,11 +15,6 @@ public class FireBall : MonoBehaviour
         Destroy(gameObject, lifeTime);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     void FixedUpdate()
     {
         transform.position += transform.right * speed;

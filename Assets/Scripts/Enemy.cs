@@ -18,7 +18,7 @@ public class Enemy : MonoBehaviour
     protected float recoilTimer;
     protected Rigidbody2D rb;
 
-    protected virtual void Awake()
+    protected virtual void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         player = PlayerController.Instance;
@@ -52,10 +52,13 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    protected virtual void OnTriggerStay2D(Collider2D _other) {
-        if (_other.CompareTag("Player") && !PlayerController.Instance.pState.invincible) {
+    protected virtual void OnCollisionStay2D(Collision2D _other) {
+        if (_other.gameObject.CompareTag("Player") && !PlayerController.Instance.pState.invincible) {
+            if (PlayerController.Instance.pState.dashing) {
+                PlayerController.Instance.pState.dashing = false;
+            }
             Attack();
-            PlayerController.Instance.HitStopTime(0, 5, 0.5f);
+            PlayerController.Instance.HitStopTime(0, 5, 0.3f);
         }
     }
 
