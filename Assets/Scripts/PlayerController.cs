@@ -62,7 +62,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public OnHealthChangedDelegate onHealthChangedCallback;
     float healTimer;
     [SerializeField] float timeToHeal;
-    private bool canFlash;
+    // private bool canFlash;
     [Space(5)]
 
     [Header("Mana")]
@@ -148,11 +148,11 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        RestoreTimeScale();
         if(pState.cutscene) return;
 
         GetInputs();
         UpdateJumpVariables();
-        RestoreTimeScale();
         FlashWhenInvincible();
 
         if (pState.dashing) return;
@@ -300,35 +300,36 @@ public class PlayerController : MonoBehaviour
             animator.SetTrigger("Attacking");
 
             if (yAxis == 0 || yAxis < 0 && Grounded()) {
-                Hit(sideAttackTransform, sideAttackArea, ref pState.recoilingX, recoilXSpeed);
+                int _recoilLeftOrRight = pState.lookingRight ? 1 : -1;
+                Hit(sideAttackTransform, sideAttackArea, ref pState.recoilingX, Vector2.right * _recoilLeftOrRight, recoilXSpeed);
                 Instantiate(slashEffect, sideAttackTransform);
                 // slashEffect.transform.localScale = new Vector2(transform.localScale.x, transform.localScale.y);
             } else if (yAxis > 0) {
-                Hit(upAttackTransform, upAttackArea, ref pState.recoilingY, recoilYSpeed);
+                Hit(upAttackTransform, upAttackArea, ref pState.recoilingY, Vector2.up, recoilYSpeed);
                 SlashEffectAtAngle(slashEffect, 90, upAttackTransform);
             } else if (yAxis < 0 && !Grounded()) {
-                Hit(downAttackTransform, downAttackArea, ref pState.recoilingY, recoilYSpeed);
+                Hit(downAttackTransform, downAttackArea, ref pState.recoilingY, Vector2.down, recoilYSpeed);
                 SlashEffectAtAngle(slashEffect, -90, downAttackTransform);
             }
         }
 
     }
 
-    private void Hit(Transform _attackTransform, Vector2 _attackArea, ref bool _recoildDir, float _recoilStrength) {
+    private void Hit(Transform _attackTransform, Vector2 _attackArea, ref bool _recoilBool, Vector2 _recoilDir, float _recoilStrength) {
         Collider2D[] objectsToHit = Physics2D.OverlapBoxAll(_attackTransform.position, _attackArea, 0, attackableLayer);
 
         // Save the enemies that have been hit
         List<Enemy> hitEnemies = new List<Enemy>();
 
         if (objectsToHit.Length > 0) {
-            _recoildDir = true;
+            _recoilBool = true;
         }
         for (int i = 0; i < objectsToHit.Length; i++) {
             Enemy e = objectsToHit[i].GetComponent<Enemy>();
 
             // This is to prevent the player from hitting the same enemy multiple times in one attack
             if (e && !hitEnemies.Contains(e)) {
-                e.EnemyHit(damage, (transform.position - objectsToHit[i].transform.position).normalized, _recoilStrength);
+                e.EnemyHit(damage, _recoilDir, _recoilStrength);
                 hitEnemies.Add(e);
 
                 if (objectsToHit[i].CompareTag("Enemy")) {
@@ -409,12 +410,13 @@ public class PlayerController : MonoBehaviour
         pState.invincible = false;
     }
 
-    IEnumerator Flash() {
-        sr.enabled = !sr.enabled;
-        canFlash = false;
-        yield return new WaitForSeconds(0.2f);
-        canFlash = true;
-    }
+    // Trigger sprite renderer invisibility instead of color
+    // IEnumerator Flash() {
+    //     sr.enabled = !sr.enabled;
+    //     canFlash = false;
+    //     yield return new WaitForSeconds(0.2f);
+    //     canFlash = true;
+    // }
 
     void RestoreTimeScale() {
         if (restoreTime) {

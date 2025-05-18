@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Metroknight {
+[HideInInspector]
 public class UIManager : MonoBehaviour
 {
 
