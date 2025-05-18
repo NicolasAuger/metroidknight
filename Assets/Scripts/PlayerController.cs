@@ -62,6 +62,8 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public OnHealthChangedDelegate onHealthChangedCallback;
     float healTimer;
     [SerializeField] float timeToHeal;
+    private bool canFlash;
+    [Space(5)]
 
     [Header("Mana")]
     [SerializeField] Image manaStorage;
@@ -146,6 +148,8 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(pState.cutscene) return;
+
         GetInputs();
         UpdateJumpVariables();
         RestoreTimeScale();
@@ -171,6 +175,7 @@ public class PlayerController : MonoBehaviour
     }
 
     private void FixedUpdate() {
+        if (pState.cutscene) return;
         if (pState.dashing) return;
         Recoil();
     }
@@ -404,6 +409,13 @@ public class PlayerController : MonoBehaviour
         pState.invincible = false;
     }
 
+    IEnumerator Flash() {
+        sr.enabled = !sr.enabled;
+        canFlash = false;
+        yield return new WaitForSeconds(0.2f);
+        canFlash = true;
+    }
+
     void RestoreTimeScale() {
         if (restoreTime) {
             if (Time.timeScale < 1) {
@@ -435,7 +447,15 @@ public class PlayerController : MonoBehaviour
     }
 
     void FlashWhenInvincible() {
-        sr.material.color = pState.invincible ? Color.Lerp(Color.white, Color.black, Mathf.PingPong(Time.time * hitFlashSpeed, 1f)) : Color.white;
+        // Trigger sprite renderer invisibility instead of color
+        // if (pState.invincible) {
+        //     if (Time.timeScale > 0.2 && canFlash) {
+        //         StartCoroutine(Flash());
+        //     }
+        // } else {
+        //     sr.enabled = true;
+        // }
+        sr.material.color = (pState.invincible && !pState.cutscene) ? Color.Lerp(Color.white, Color.black, Mathf.PingPong(Time.time * hitFlashSpeed, 1f)) : Color.white;
     }
 
     void Heal() {
@@ -511,6 +531,25 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(0.35f);
         animator.SetBool("Casting", false);
         pState.casting = false;
+    }
+
+    public IEnumerator WalkIntoNewScene(Vector2 _exitDir, float _delay) {
+        pState.invincible = true;
+
+        // If exit direction is upwards
+        if (_exitDir.y > 0) {
+            rb.velocity = jumpForce * _exitDir;
+        }
+
+        // If exit direction requires horitontal movement
+        if (_exitDir.x != 0) {
+            xAxis = _exitDir.x > 0 ? 1 : -1;
+            Move();
+        }
+        Flip();
+        yield return new WaitForSeconds(_delay);
+        pState.invincible = false;
+        pState.cutscene = false;
     }
 
     private void OnDrawGizmos()
