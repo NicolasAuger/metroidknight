@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 namespace Metroknight {
 public class SceneFader : MonoBehaviour
 {
-    [SerializeField] private float fadeTime;
+    [SerializeField] public float fadeTime;
     private Image fadeOutUIImage;
 
     public enum FadeDirection {
@@ -49,7 +49,7 @@ public class SceneFader : MonoBehaviour
     {
         fadeOutUIImage.color = new Color(fadeOutUIImage.color.r, fadeOutUIImage.color.g, fadeOutUIImage.color.b, _alpha);
         // Use Time.delta time to ensure a consistent fade speed accross different frame rates
-        _alpha += Time.deltaTime * (1 / fadeTime) * (_fadeDirection == FadeDirection.Out ? -1 : 1);
+        _alpha += Time.unscaledDeltaTime * (1 / fadeTime) * (_fadeDirection == FadeDirection.Out ? -1 : 1);
     }
 }
 }

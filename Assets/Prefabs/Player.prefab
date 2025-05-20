@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 1447746118252159474}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.06, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 1.25, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -103,8 +103,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -2034801127
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 2c961366528f28c458c619797d0bbb2f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -229,7 +229,7 @@ Transform:
   m_GameObject: {fileID: 6360179220343873222}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.06, y: -1.91, z: 0}
+  m_LocalPosition: {x: 0.03, y: -2.31, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -250,6 +250,7 @@ GameObject:
   - component: {fileID: 5425776342075892120}
   - component: {fileID: 4247665744220931521}
   - component: {fileID: 7661288726106168178}
+  - component: {fileID: 5771392166226711021}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -424,7 +425,7 @@ MonoBehaviour:
   jumpBufferFrames: 0.2
   coyoteTime: 0.1
   maxAirJumps: 1
-  dashSpeed: 45
+  dashSpeed: 30
   dashTime: 0.2
   dashCooldown: 0.35
   dashEffect: {fileID: 3702993741222916020, guid: 828eed02980a4406b8ac7f85c0193d6b, type: 3}
@@ -436,8 +437,8 @@ MonoBehaviour:
   upAttackTransform: {fileID: 6934845081498192590}
   downAttackTransform: {fileID: 3241902665940612327}
   sideAttackArea: {x: 2, y: 2}
-  upAttackArea: {x: 1.4, y: 1.4}
-  downAttackArea: {x: 1.4, y: 1.4}
+  upAttackArea: {x: 1.83, y: 1.96}
+  downAttackArea: {x: 1.83, y: 1.96}
   slashEffect: {fileID: 4390498643010443790, guid: 3b0b3ceca73744ed79eba778eebc44d4, type: 3}
   timeBetweenAttack: 0.4
   recoilXSteps: 5
@@ -461,6 +462,7 @@ MonoBehaviour:
   upSpellExplosion: {fileID: 1900944211245768753, guid: 5a496d4ba4997437b87da227fd46237f, type: 3}
   downSpellFireball: {fileID: 1758334452910308090}
   pState: {fileID: 0}
+  rb: {fileID: 0}
 --- !u!114 &4247665744220931521
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -481,6 +483,7 @@ MonoBehaviour:
   invincible: 0
   healing: 0
   casting: 0
+  cutscene: 0
 --- !u!95 &7661288726106168178
 Animator:
   serializedVersion: 5
@@ -502,6 +505,56 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &5771392166226711021
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9059257841007337660}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 073797afb82c5a1438f328866b10b3f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ComponentVersion: 1
+  m_LightType: 3
+  m_BlendStyleIndex: 0
+  m_FalloffIntensity: 0.518
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Intensity: 0.8
+  m_LightVolumeIntensity: 1
+  m_LightVolumeIntensityEnabled: 0
+  m_ApplyToSortingLayers: 1966b786
+  m_LightCookieSprite: {fileID: 0}
+  m_DeprecatedPointLightCookieSprite: {fileID: 0}
+  m_LightOrder: 0
+  m_AlphaBlendOnOverlap: 0
+  m_OverlapOperation: 0
+  m_NormalMapDistance: 3
+  m_NormalMapQuality: 2
+  m_UseNormalMap: 0
+  m_ShadowIntensityEnabled: 0
+  m_ShadowIntensity: 0.75
+  m_ShadowVolumeIntensityEnabled: 0
+  m_ShadowVolumeIntensity: 0.75
+  m_LocalBounds:
+    m_Center: {x: 0, y: -0.00000011920929, z: 0}
+    m_Extent: {x: 0.9985302, y: 0.99853027, z: 0}
+  m_PointLightInnerAngle: 360
+  m_PointLightOuterAngle: 360
+  m_PointLightInnerRadius: 3
+  m_PointLightOuterRadius: 8
+  m_ShapeLightParametricSides: 5
+  m_ShapeLightParametricAngleOffset: 0
+  m_ShapeLightParametricRadius: 1
+  m_ShapeLightFalloffSize: 0.5
+  m_ShapeLightFalloffOffset: {x: 0, y: 0}
+  m_ShapePath:
+  - {x: -0.5, y: -0.5, z: 0}
+  - {x: 0.5, y: -0.5, z: 0}
+  - {x: 0.5, y: 0.5, z: 0}
+  - {x: -0.5, y: 0.5, z: 0}
 --- !u!1 &9148250596429234976
 GameObject:
   m_ObjectHideFlags: 0

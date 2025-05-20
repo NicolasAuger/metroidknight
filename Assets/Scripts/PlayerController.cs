@@ -88,7 +88,7 @@ public class PlayerController : MonoBehaviour
     [Space(5)]
 
     [HideInInspector] public PlayerStateList pState;
-    private Rigidbody2D rb;
+    public Rigidbody2D rb;
     private Animator animator;
     private float gravity;
     private float xAxis, yAxis;
