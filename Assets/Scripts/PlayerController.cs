@@ -84,8 +84,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject sideSpellFireball;
     [SerializeField] GameObject upSpellExplosion;
     [SerializeField] GameObject downSpellFireball;
-
     [Space(5)]
+
+    [Header("Camera Settings")]
+    [SerializeField] private float playerFallSpeedThreshold = -10;
 
     [HideInInspector] public PlayerStateList pState;
     public Rigidbody2D rb;
@@ -132,17 +134,18 @@ public class PlayerController : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        pState = GetComponent<PlayerStateList>();
-        rb = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>();
-        sr = GetComponent<SpriteRenderer>();
-        gravity = rb.gravityScale;
+        // Start is called before the first frame update
+        void Start()
+        {
+            pState = GetComponent<PlayerStateList>();
+            rb = GetComponent<Rigidbody2D>();
+            animator = GetComponent<Animator>();
+            sr = GetComponent<SpriteRenderer>();
+            gravity = rb.gravityScale;
 
-        Mana = mana;
-        manaStorage.fillAmount = Mana;
+            Mana = mana;
+            manaStorage.fillAmount = Mana;
+            pState.alive = true;
     }
 
     // Update is called once per frame
@@ -150,21 +153,27 @@ public class PlayerController : MonoBehaviour
     {
         RestoreTimeScale();
         if(pState.cutscene) return;
+        if (pState.alive)
+        {
+            GetInputs();
+        }
 
-        GetInputs();
         UpdateJumpVariables();
+        UpdateCameraYDampWhileFalling();
         FlashWhenInvincible();
 
-        if (pState.dashing) return;
-        Move();
-        Heal();
-        CastSpells();
+        if (pState.dashing || pState.healing) return;
 
-        if (pState.healing) return;
-        Flip();
-        Jump();
-        StartDash();
-        Attack();
+        if (pState.alive)
+        {
+            Flip();
+            Move();
+            Jump();
+            StartDash();
+            Attack();
+            Heal();
+            CastSpells();
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D _other) // For up & down spells
@@ -260,6 +269,24 @@ public class PlayerController : MonoBehaviour
         } else {
             jumpBufferCounter = jumpBufferCounter - Time.deltaTime * 10;
         }
+    }
+
+        void UpdateCameraYDampWhileFalling()
+        {
+            // If falling past a certain speed threshold
+            if (rb.velocity.y < playerFallSpeedThreshold && !CameraManager.Instance.isLerpingYDamping && !CameraManager.Instance.hasLearpedYDamping)
+            {
+                // Lerp the YDamping to a lower value
+                StartCoroutine(CameraManager.Instance.LerpYDaming(true));
+            }
+
+            // If standing still or moving up
+            if (rb.velocity.y >= 0 && !CameraManager.Instance.isLerpingYDamping && CameraManager.Instance.hasLearpedYDamping)
+            {
+                // Reset camera function
+                CameraManager.Instance.hasLearpedYDamping = false;
+                StartCoroutine(CameraManager.Instance.LerpYDaming(false));
+            }
     }
 
     void StartDash() {
@@ -397,14 +424,26 @@ public class PlayerController : MonoBehaviour
     }
 
     public void TakeDamage(float _damage) {
-        Health -= Mathf.RoundToInt(_damage);
-        StartCoroutine(StopTakingDamage());
+        if (pState.alive)
+        {
+            Health -= Mathf.RoundToInt(_damage);
+            if (Health <= 0)
+            {
+                Health = 0;
+                StartCoroutine(Death());
+            }
+            else
+            {
+                StartCoroutine(StopTakingDamage());
+            }
+
+        }
     }
 
     IEnumerator StopTakingDamage() {
+        pState.invincible = true;
         GameObject _bloodSpurtParticles = Instantiate(bloodSpurt, transform.position, Quaternion.identity);
         Destroy(_bloodSpurtParticles, 1.5f);
-        pState.invincible = true;
         animator.SetTrigger("Damaged");
         yield return new WaitForSeconds(1f);
         pState.invincible = false;
@@ -554,13 +593,36 @@ public class PlayerController : MonoBehaviour
         pState.cutscene = false;
     }
 
-    private void OnDrawGizmos()
+    public IEnumerator Death()
     {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(sideAttackTransform.position, sideAttackArea);
-        Gizmos.DrawWireCube(upAttackTransform.position, upAttackArea);
-        Gizmos.DrawWireCube(downAttackTransform.position, downAttackArea);
+        pState.alive = false;
+        rb.velocity = Vector2.zero;
+        rb.gravityScale = 0;
+        Time.timeScale = 1f;
+        GameObject _bloodSpurtParticles = Instantiate(bloodSpurt, transform.position, Quaternion.identity);
+        Destroy(_bloodSpurtParticles, 1.5f);
+        animator.SetTrigger("Death");
+        yield return new WaitForSeconds(0.9f);
+        StartCoroutine(UIManager.Instance.ActivateDeathScreen());
     }
+
+    public void Respawned()
+    {
+        if (!pState.alive)
+        {
+            pState.alive = true;
+            Health = maxHealth;
+            animator.Play("Player_Idle");
+        }
+    }
+
+    private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireCube(sideAttackTransform.position, sideAttackArea);
+            Gizmos.DrawWireCube(upAttackTransform.position, upAttackArea);
+            Gizmos.DrawWireCube(downAttackTransform.position, downAttackArea);
+        }
 
   }
 }

@@ -92,7 +92,10 @@ public class Enemy : MonoBehaviour
                 PlayerController.Instance.pState.dashing = false;
             }
             Attack();
-            PlayerController.Instance.HitStopTime(0, 5, 0.3f);
+                if (PlayerController.Instance.pState.alive)
+                {
+                    PlayerController.Instance.HitStopTime(0, 5, 0.3f);
+                }
         }
     }
 

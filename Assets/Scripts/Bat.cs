@@ -16,45 +16,55 @@ public class Bat : Enemy
         base.Start();
         ChangeState(EnemyStates.Bat_Idle);
     }
+    
+    protected override void Update()
+    {
+        base.Update();
+        if (!PlayerController.Instance.pState.alive)
+        {
+            ChangeState(EnemyStates.Bat_Idle);
+        }
+    }
 
     protected override void UpdateEnemyStates()
-    {
-        float _dist = Vector2.Distance(transform.position, PlayerController.Instance.transform.position);
+        {
+            float _dist = Vector2.Distance(transform.position, PlayerController.Instance.transform.position);
 
-      switch (GetCurrentEnemyState)
-      {
-        case EnemyStates.Bat_Idle:
-            if (_dist < chaseDistance)
+            switch (GetCurrentEnemyState)
             {
-                ChangeState(EnemyStates.Bat_Chase);
+                case EnemyStates.Bat_Idle:
+                    rb.velocity = new Vector2(0, 0);
+                    if (_dist < chaseDistance)
+                    {
+                        ChangeState(EnemyStates.Bat_Chase);
+                    }
+                    break;
+
+                case EnemyStates.Bat_Chase:
+                    rb.MovePosition(Vector2.MoveTowards(transform.position, PlayerController.Instance.transform.position, speed * Time.deltaTime));
+                    FlipBat();
+                    if (_dist > chaseDistance)
+                    {
+                        ChangeState(EnemyStates.Bat_Idle);
+                    }
+                    break;
+
+                case EnemyStates.Bat_Stunned:
+                    timer += Time.deltaTime;
+                    if (timer >= stunDuration)
+                    {
+                        ChangeState(EnemyStates.Bat_Idle);
+                        timer = 0;
+                    }
+                    // Handle stunned state
+                    break;
+
+                case EnemyStates.Bat_Death:
+                    Death(Random.Range(5, 10));
+                    break;
             }
-            break;
 
-        case EnemyStates.Bat_Chase:
-            rb.MovePosition(Vector2.MoveTowards(transform.position, PlayerController.Instance.transform.position, speed * Time.deltaTime));
-            FlipBat();
-            if (_dist > chaseDistance)
-            {
-                ChangeState(EnemyStates.Bat_Idle);
-            }
-            break;
-
-        case EnemyStates.Bat_Stunned:
-            timer += Time.deltaTime;
-            if (timer >= stunDuration)
-            {
-                ChangeState(EnemyStates.Bat_Idle);
-                timer = 0;
-            }
-            // Handle stunned state
-            break;
-
-        case EnemyStates.Bat_Death:
-            Death(Random.Range(5, 10));
-            break;
-      }
-
-    }
+        }
 
     void FlipBat() {
         sr.flipX = PlayerController.Instance.transform.position.x < transform.position.x;

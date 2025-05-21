@@ -461,6 +461,7 @@ MonoBehaviour:
   sideSpellFireball: {fileID: 8870402565392076032, guid: 8881e1137c1754aeca7562ce214bf14f, type: 3}
   upSpellExplosion: {fileID: 1900944211245768753, guid: 5a496d4ba4997437b87da227fd46237f, type: 3}
   downSpellFireball: {fileID: 1758334452910308090}
+  playerFallSpeedThreshold: -10
   pState: {fileID: 0}
   rb: {fileID: 0}
 --- !u!114 &4247665744220931521
@@ -484,6 +485,7 @@ MonoBehaviour:
   healing: 0
   casting: 0
   cutscene: 0
+  alive: 0
 --- !u!95 &7661288726106168178
 Animator:
   serializedVersion: 5
