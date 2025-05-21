@@ -7,7 +7,7 @@ namespace Metroknight
   {
     private void OnTriggerEnter2D(Collider2D _other)
     {
-      if (_other.CompareTag("Player"))
+      if (_other.CompareTag("Player") && PlayerController.Instance.pState.alive)
       {
         StartCoroutine(RespawnPoint());
       }
@@ -26,7 +26,6 @@ namespace Metroknight
       yield return new WaitForSecondsRealtime(1f);
       PlayerController.Instance.transform.position = GameManager.Instance.platformingRespawnPoint;
       StartCoroutine(UIManager.Instance.sceneFader.Fade(SceneFader.FadeDirection.Out));
-      PlayerController.Instance.pState.cutscene = false;
       yield return new WaitForSecondsRealtime(UIManager.Instance.sceneFader.fadeTime);
       PlayerController.Instance.pState.cutscene = false;
       PlayerController.Instance.pState.invincible = false;
