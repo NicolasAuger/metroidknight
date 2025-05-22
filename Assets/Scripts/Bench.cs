@@ -6,16 +6,32 @@ namespace Metroknight
 {
     public class Bench : MonoBehaviour
     {
-
         public bool interacted;
+        public bool playerInZone;
 
-        private void OnTriggerStay2D(Collider2D _other)
+        private void OnTriggerEnter2D(Collider2D _other)
         {
-            if (_other.CompareTag("Player") && Input.GetButtonDown("Interact"))
+            if (_other.CompareTag("Player"))
             {
-                Debug.Log("Interacted with bench");
+                playerInZone = true;
+            }
+        }
+
+        private void OnTriggerExit2D(Collider2D _other)
+        {
+            if (_other.CompareTag("Player"))
+            {
+                playerInZone = false;
+            }
+        }
+
+        private void Update()
+        {
+            if (Input.GetButtonDown("Interact") && playerInZone)
+            {
+                Debug.Log("Interacting with bench");
                 interacted = true;
             }
         }
-    }
+  }
 }

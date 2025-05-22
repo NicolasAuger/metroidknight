@@ -877,6 +877,7 @@ GameObject:
   - component: {fileID: 122302996}
   - component: {fileID: 122302995}
   - component: {fileID: 122302998}
+  - component: {fileID: 122302999}
   m_Layer: 0
   m_Name: Bench
   m_TagString: Untagged
@@ -1009,6 +1010,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interacted: 0
+--- !u!50 &122302999
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 122302994}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 1
+  m_Constraints: 0
 --- !u!4 &144945921 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7970752137679561653, guid: 1d1061b72f29b41cc889c4e017dca38b, type: 3}
@@ -1979,8 +2007,8 @@ MonoBehaviour:
   m_ShadowVolumeIntensityEnabled: 0
   m_ShadowVolumeIntensity: 0.75
   m_LocalBounds:
-    m_Center: {x: 10.64845, y: -1.9588499, z: 0}
-    m_Extent: {x: 13.284551, y: 4.46375, z: 0}
+    m_Center: {x: 10.6453, y: -1.96335, z: 0}
+    m_Extent: {x: 13.2861, y: 4.46445, z: 0}
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
   m_PointLightInnerRadius: 0
@@ -11202,8 +11230,8 @@ MonoBehaviour:
   m_ShadowVolumeIntensityEnabled: 0
   m_ShadowVolumeIntensity: 0.75
   m_LocalBounds:
-    m_Center: {x: 13.974609, y: 5.1172, z: 0}
-    m_Extent: {x: 33.88691, y: 5.1598997, z: 0}
+    m_Center: {x: 13.973209, y: 5.11155, z: 0}
+    m_Extent: {x: 33.88831, y: 5.14945, z: 0}
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
   m_PointLightInnerRadius: 0
