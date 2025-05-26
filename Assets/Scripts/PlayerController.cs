@@ -70,6 +70,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float mana;
     [SerializeField] private float manaDrainSpeed;
     [SerializeField] private float manaGain;
+    bool halfMana;
     [Space(5)]
 
     [Header("Spell Casting")]
@@ -114,7 +115,11 @@ public class PlayerController : MonoBehaviour
         get { return mana; }
         set {
             if (mana != value) {
-                mana = Mathf.Clamp(value, 0, 1);
+                if (!halfMana) {
+                    mana = Mathf.Clamp(value, 0, 1);
+                } else {
+                    mana = Mathf.Clamp(value, 0, 0.5f);
+                }
                 manaStorage.fillAmount = mana;
             }
         }
@@ -593,17 +598,20 @@ public class PlayerController : MonoBehaviour
         pState.cutscene = false;
     }
 
-    public IEnumerator Death()
-    {
-        pState.alive = false;
-        rb.velocity = Vector2.zero;
-        rb.gravityScale = 0;
-        Time.timeScale = 1f;
-        GameObject _bloodSpurtParticles = Instantiate(bloodSpurt, transform.position, Quaternion.identity);
-        Destroy(_bloodSpurtParticles, 1.5f);
-        animator.SetTrigger("Death");
-        yield return new WaitForSeconds(0.9f);
-        StartCoroutine(UIManager.Instance.ActivateDeathScreen());
+        public IEnumerator Death()
+        {
+            pState.alive = false;
+            rb.velocity = Vector2.zero;
+            rb.gravityScale = 0;
+            Time.timeScale = 1f;
+            GameObject _bloodSpurtParticles = Instantiate(bloodSpurt, transform.position, Quaternion.identity);
+            Destroy(_bloodSpurtParticles, 1.5f);
+            animator.SetTrigger("Death");
+            yield return new WaitForSeconds(0.9f);
+            StartCoroutine(UIManager.Instance.ActivateDeathScreen());
+
+            yield return new WaitForSeconds(0.9f);
+            Instantiate(GameManager.Instance.shade, transform.position, Quaternion.identity);
     }
 
     public void Respawned()
@@ -611,9 +619,18 @@ public class PlayerController : MonoBehaviour
         if (!pState.alive)
         {
             pState.alive = true;
+            halfMana = true;
+            UIManager.Instance.SwitchManaState(UIManager.ManaState.HalfMana);
+            Mana = 0;
             Health = maxHealth;
             animator.Play("Player_Idle");
         }
+    }
+
+        public void RestoreMana()
+        {
+            halfMana = false;
+            UIManager.Instance.SwitchManaState(UIManager.ManaState.FullMana);
     }
 
     private void OnDrawGizmos()

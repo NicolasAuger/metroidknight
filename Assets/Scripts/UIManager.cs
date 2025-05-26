@@ -8,7 +8,17 @@ namespace Metroknight {
   {
 
     public SceneFader sceneFader;
+    [SerializeField] GameObject halfMana, fullMana;
     [SerializeField] GameObject deathScreen;
+
+    public enum ManaState
+    {
+      HalfMana,
+      FullMana
+    }
+
+    public ManaState manaState;
+
     // Singleton instance
     public static UIManager Instance;
 
@@ -41,6 +51,22 @@ namespace Metroknight {
       yield return new WaitForSeconds(0.5f);
       deathScreen.SetActive(false);
       StartCoroutine(sceneFader.Fade(SceneFader.FadeDirection.Out));
+    }
+
+    public void SwitchManaState(ManaState _manaState)
+    {
+      switch (_manaState)
+      {
+        case ManaState.FullMana:
+          halfMana.SetActive(false);
+          fullMana.SetActive(true);
+          break;
+        case ManaState.HalfMana:
+          halfMana.SetActive(true);
+          fullMana.SetActive(false);
+          break;
+      }
+      manaState = _manaState;
     }
   }
 }

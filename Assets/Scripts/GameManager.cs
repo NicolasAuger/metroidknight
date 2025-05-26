@@ -11,6 +11,7 @@ namespace Metroknight
         public Vector2 platformingRespawnPoint;
         public Vector2 respawnPoint;
         [SerializeField] Bench bench;
+        public GameObject shade;
 
         // Singleton instance
         public static GameManager Instance { get; private set; }
