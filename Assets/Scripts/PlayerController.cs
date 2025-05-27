@@ -95,21 +95,26 @@ public class PlayerController : MonoBehaviour
     private Animator animator;
     private float gravity;
     private float xAxis, yAxis;
+    bool openMap;
     private bool canDash = true;
     private bool dashed;
     private SpriteRenderer sr;
 
-    public int Health {
-        get { return health; }
-        set {
-            if (health != value) {
-                health = Mathf.Clamp(value, 0, maxHealth);
-                if (onHealthChangedCallback != null) {
-                    onHealthChangedCallback.Invoke();
+    public int Health
+        {
+            get { return health; }
+            set
+            {
+                if (health != value)
+                {
+                    health = Mathf.Clamp(value, 0, maxHealth);
+                    if (onHealthChangedCallback != null)
+                    {
+                        onHealthChangedCallback.Invoke();
+                    }
                 }
             }
         }
-    }
 
     public float Mana {
         get { return mana; }
@@ -161,6 +166,7 @@ public class PlayerController : MonoBehaviour
         if (pState.alive)
         {
             GetInputs();
+            ToggleMap();
         }
 
         UpdateJumpVariables();
@@ -199,10 +205,14 @@ public class PlayerController : MonoBehaviour
         xAxis = Input.GetAxisRaw("Horizontal");
         yAxis = Input.GetAxisRaw("Vertical");
         attacking = Input.GetButtonDown("Attack");
+        openMap = Input.GetButton("Map");
 
-        if (Input.GetButton("Cast/Heal")) {
+        if (Input.GetButton("Cast/Heal"))
+        {
             castOrHealTimer += Time.deltaTime;
-        } else {
+        }
+        else
+        {
             castOrHealTimer = 0;
         }
     }
@@ -627,10 +637,22 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-        public void RestoreMana()
+    public void RestoreMana()
+    {
+        halfMana = false;
+        UIManager.Instance.SwitchManaState(UIManager.ManaState.FullMana);
+    }
+
+    public void ToggleMap()
+    {
+        if (openMap)
         {
-            halfMana = false;
-            UIManager.Instance.SwitchManaState(UIManager.ManaState.FullMana);
+            UIManager.Instance.mapHandler.SetActive(true);
+        }
+        else
+        {
+            UIManager.Instance.mapHandler.SetActive(false);
+        }
     }
 
     private void OnDrawGizmos()

@@ -10,6 +10,7 @@ namespace Metroknight {
     public SceneFader sceneFader;
     [SerializeField] GameObject halfMana, fullMana;
     [SerializeField] GameObject deathScreen;
+    public GameObject mapHandler;
 
     public enum ManaState
     {
