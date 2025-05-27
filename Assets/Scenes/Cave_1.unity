@@ -2008,8 +2008,8 @@ MonoBehaviour:
   m_ShadowVolumeIntensityEnabled: 0
   m_ShadowVolumeIntensity: 0.75
   m_LocalBounds:
-    m_Center: {x: 10.65285, y: -1.9649501, z: 0}
-    m_Extent: {x: 13.27975, y: 4.47055, z: 0}
+    m_Center: {x: 10.6533, y: -1.9640499, z: 0}
+    m_Extent: {x: 13.2839, y: 4.46075, z: 0}
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
   m_PointLightInnerRadius: 0
@@ -3386,6 +3386,11 @@ Transform:
   - {fileID: 936985095}
   m_Father: {fileID: 1619107604}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &542238467 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6342081992217246633, guid: e94619849125a40a59b95e74349de57f, type: 3}
+  m_PrefabInstance: {fileID: 3947251749493228858}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &560918626
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8517,6 +8522,11 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &1454162941 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5513114879461537218, guid: e94619849125a40a59b95e74349de57f, type: 3}
+  m_PrefabInstance: {fileID: 3947251749493228858}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1457417943
 GameObject:
   m_ObjectHideFlags: 0
@@ -11232,8 +11242,8 @@ MonoBehaviour:
   m_ShadowVolumeIntensityEnabled: 0
   m_ShadowVolumeIntensity: 0.75
   m_LocalBounds:
-    m_Center: {x: 13.9717, y: 5.1185503, z: 0}
-    m_Extent: {x: 33.8945, y: 5.15215, z: 0}
+    m_Center: {x: 13.970149, y: 5.119, z: 0}
+    m_Extent: {x: 33.89425, y: 5.1438003, z: 0}
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
   m_PointLightInnerRadius: 0
@@ -12222,17 +12232,37 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 1055748358066248659, guid: e94619849125a40a59b95e74349de57f, type: 3}
+      propertyPath: maps.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1055748358066248659, guid: e94619849125a40a59b95e74349de57f, type: 3}
+      propertyPath: maps.Array.data[0]
+      value: 
+      objectReference: {fileID: 1454162941}
+    - target: {fileID: 1055748358066248659, guid: e94619849125a40a59b95e74349de57f, type: 3}
+      propertyPath: maps.Array.data[1]
+      value: 
+      objectReference: {fileID: 542238467}
     - target: {fileID: 4901576368867386471, guid: e94619849125a40a59b95e74349de57f, type: 3}
       propertyPath: m_Name
       value: Canvas
       objectReference: {fileID: 0}
+    - target: {fileID: 5513114879461537218, guid: e94619849125a40a59b95e74349de57f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5948790516359865950, guid: e94619849125a40a59b95e74349de57f, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6180482756588259071, guid: e94619849125a40a59b95e74349de57f, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6342081992217246633, guid: e94619849125a40a59b95e74349de57f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7084723620202218136, guid: e94619849125a40a59b95e74349de57f, type: 3}
       propertyPath: m_IsActive

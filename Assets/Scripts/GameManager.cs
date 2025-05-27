@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.SearchService;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Metroknight
 {
@@ -18,6 +16,8 @@ namespace Metroknight
 
         private void Awake()
         {
+            SaveData.Instance.Initialize();
+
             // Check if instance already exists
             if (Instance != null && Instance != this)
             {
@@ -26,26 +26,36 @@ namespace Metroknight
             else
             {
                 Instance = this;
+                SceneManager.sceneLoaded += OnSceneLoaded;
             }
             DontDestroyOnLoad(gameObject); // Persist across scenes
             bench = FindObjectOfType<Bench>();
+        }
+
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            SaveScene();
         }
 
         public void RespawnPlayer()
         {
             if (bench != null && bench.interacted)
             {
-                Debug.Log("Player set bench position");
                 respawnPoint = bench.transform.position;
             }
             else
             {
-                Debug.Log("Player reset respawn to the zone point");
                 respawnPoint = platformingRespawnPoint;
             }
             PlayerController.Instance.transform.position = respawnPoint;
             StartCoroutine(UIManager.Instance.DeactivateDeathScreen());
             PlayerController.Instance.Respawned();
+        }
+
+        public void SaveScene()
+        {
+            string currentSceneName = SceneManager.GetActiveScene().name;
+            SaveData.Instance.sceneNames.Add(currentSceneName);
         }
     }
 }
