@@ -145,6 +145,7 @@ public class PlayerController : MonoBehaviour
     // Unlocks
     public bool unlockedWallJump;
     public bool unlockedDash;
+    public bool unlockedMultipleJumps;
 
     public static PlayerController Instance;
 
@@ -300,11 +301,16 @@ public class PlayerController : MonoBehaviour
 
     public void Jump() {
         // Jump only if the player is grounded
-        if (!pState.jumping) {
-            if (jumpBufferCounter > 0 && coyoteTimeCounter > 0) {
+        if (!pState.jumping)
+        {
+            if (jumpBufferCounter > 0 && coyoteTimeCounter > 0)
+            {
                 rb.velocity = new Vector3(rb.velocity.x, jumpForce);
                 pState.jumping = true;
-            } else if (!Grounded() && airJumpCounter < maxAirJumps && Input.GetButtonDown("Jump")) {
+            }
+            // Multiple jumps
+            else if (!Grounded() && airJumpCounter < maxAirJumps && Input.GetButtonDown("Jump") && unlockedMultipleJumps)
+            {
                 pState.jumping = true;
                 airJumpCounter++;
                 rb.velocity = new Vector3(rb.velocity.x, jumpForce);

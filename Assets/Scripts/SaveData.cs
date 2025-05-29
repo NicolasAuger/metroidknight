@@ -29,6 +29,7 @@ namespace Metroknight
     public string lastScene;
     public bool unlockedWallJump;
     public bool unlockedDash;
+    public bool unlockedMultipleJumps;
 
     // Shade stuff
     public Vector2 shadePos;
@@ -82,6 +83,7 @@ namespace Metroknight
         lastScene = SceneManager.GetActiveScene().name;
         unlockedWallJump = PlayerController.Instance.unlockedWallJump;
         unlockedDash = PlayerController.Instance.unlockedDash;
+        unlockedMultipleJumps = PlayerController.Instance.unlockedMultipleJumps;
 
         writer.Write(playerHealth);
         writer.Write(playerMana);
@@ -91,6 +93,7 @@ namespace Metroknight
         writer.Write(lastScene);
         writer.Write(unlockedWallJump);
         writer.Write(unlockedDash);
+        writer.Write(unlockedMultipleJumps);
       }
     }
 
@@ -145,6 +148,7 @@ namespace Metroknight
           lastScene = reader.ReadString();
           unlockedWallJump = reader.ReadBoolean();
           unlockedDash = reader.ReadBoolean();
+          unlockedMultipleJumps = reader.ReadBoolean();
 
           SceneManager.LoadScene(lastScene); // Load the last scene
           PlayerController.Instance.transform.position = playerPosition;
@@ -153,6 +157,7 @@ namespace Metroknight
           PlayerController.Instance.halfMana = playerHalfMana;
           PlayerController.Instance.unlockedWallJump = unlockedWallJump;
           PlayerController.Instance.unlockedDash = unlockedDash;
+          PlayerController.Instance.unlockedMultipleJumps = unlockedMultipleJumps;
         }
       }
       else
@@ -169,6 +174,7 @@ namespace Metroknight
       PlayerController.Instance.halfMana = false;
       PlayerController.Instance.unlockedWallJump = false;
       PlayerController.Instance.unlockedDash = false;
+      PlayerController.Instance.unlockedMultipleJumps = false;
     }
 
     public void SaveShade()
