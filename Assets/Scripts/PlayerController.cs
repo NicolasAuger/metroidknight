@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float jumpBufferFrames;
     [SerializeField] private float coyoteTime;
     [SerializeField] private int maxAirJumps;
+    [SerializeField] private int maxFallSpeed;
     private float jumpBufferCounter = 0;
     private float coyoteTimeCounter = 0;
     private int airJumpCounter = 0;
@@ -70,7 +71,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float mana;
     [SerializeField] private float manaDrainSpeed;
     [SerializeField] private float manaGain;
-    bool halfMana;
+    public bool halfMana;
     [Space(5)]
 
     [Header("Spell Casting")]
@@ -144,18 +145,36 @@ public class PlayerController : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-        // Start is called before the first frame update
-        void Start()
-        {
-            pState = GetComponent<PlayerStateList>();
-            rb = GetComponent<Rigidbody2D>();
-            animator = GetComponent<Animator>();
-            sr = GetComponent<SpriteRenderer>();
-            gravity = rb.gravityScale;
+    // Start is called before the first frame update
+    void Start()
+    {
+        pState = GetComponent<PlayerStateList>();
+        rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
+        sr = GetComponent<SpriteRenderer>();
 
-            Mana = mana;
-            manaStorage.fillAmount = Mana;
-            pState.alive = true;
+        gravity = rb.gravityScale;
+
+        Mana = mana;
+        manaStorage.fillAmount = Mana;
+        pState.alive = true;
+
+        SaveData.Instance.LoadPlayer();
+
+        if (halfMana == true)
+        {
+            UIManager.Instance.SwitchManaState(UIManager.ManaState.HalfMana);
+        }
+        else
+        {
+            UIManager.Instance.SwitchManaState(UIManager.ManaState.FullMana);
+        }
+
+        if (Health == 0)
+        {
+            pState.alive = false;
+            GameManager.Instance.RespawnPlayer();
+        }
     }
 
     // Update is called once per frame
@@ -173,17 +192,19 @@ public class PlayerController : MonoBehaviour
         UpdateCameraYDampWhileFalling();
         FlashWhenInvincible();
 
-        if (pState.dashing || pState.healing) return;
+       if (pState.dashing) return;
 
+        Move();
+        Heal();
+        CastSpells();
+
+        if (pState.healing) return;
         if (pState.alive)
         {
             Flip();
-            Move();
             Jump();
             StartDash();
             Attack();
-            Heal();
-            CastSpells();
         }
     }
 
@@ -259,11 +280,14 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        // Variable jump height
+        // Variable jump height (rb.velocity.y > 3 in the tutorial)
         if (Input.GetButtonUp("Jump") && rb.velocity.y > 0) {
             rb.velocity = new Vector2(rb.velocity.x, 0);
             pState.jumping = false;
         }
+
+        // Clamp the fall speed
+        rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, -maxFallSpeed, rb.velocity.y));
 
         animator.SetBool("Jumping", !Grounded());
     }
@@ -608,26 +632,32 @@ public class PlayerController : MonoBehaviour
         pState.cutscene = false;
     }
 
-        public IEnumerator Death()
-        {
-            pState.alive = false;
-            rb.velocity = Vector2.zero;
-            rb.gravityScale = 0;
-            Time.timeScale = 1f;
-            GameObject _bloodSpurtParticles = Instantiate(bloodSpurt, transform.position, Quaternion.identity);
-            Destroy(_bloodSpurtParticles, 1.5f);
-            animator.SetTrigger("Death");
-            yield return new WaitForSeconds(0.9f);
-            StartCoroutine(UIManager.Instance.ActivateDeathScreen());
+    public IEnumerator Death()
+    {
+        pState.alive = false;
+        rb.velocity = Vector2.zero;
+        rb.gravityScale = 0;
+        Time.timeScale = 1f;
+        GameObject _bloodSpurtParticles = Instantiate(bloodSpurt, transform.position, Quaternion.identity);
+        Destroy(_bloodSpurtParticles, 1.5f);
+        animator.SetTrigger("Death");
+        rb.constraints = RigidbodyConstraints2D.FreezePosition;
+        GetComponent<Collider2D>().enabled = false;
 
-            yield return new WaitForSeconds(0.9f);
-            Instantiate(GameManager.Instance.shade, transform.position, Quaternion.identity);
+        yield return new WaitForSeconds(0.9f);
+        StartCoroutine(UIManager.Instance.ActivateDeathScreen());
+
+        yield return new WaitForSeconds(0.9f);
+        Instantiate(GameManager.Instance.shade, transform.position, Quaternion.identity);
     }
 
     public void Respawned()
     {
         if (!pState.alive)
         {
+            rb.constraints = RigidbodyConstraints2D.None;
+            rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+            GetComponent<Collider2D>().enabled = true;
             pState.alive = true;
             halfMana = true;
             UIManager.Instance.SwitchManaState(UIManager.ManaState.HalfMana);

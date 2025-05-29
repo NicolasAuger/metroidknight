@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Metroknight
 {
@@ -22,6 +23,7 @@ namespace Metroknight
             if (_other.CompareTag("Player"))
             {
                 playerInZone = false;
+                interacted = false;
             }
         }
 
@@ -29,8 +31,12 @@ namespace Metroknight
         {
             if (Input.GetButtonDown("Interact") && playerInZone)
             {
-                Debug.Log("Interacting with bench");
                 interacted = true;
+                SaveData.Instance.benchSceneName = SceneManager.GetActiveScene().name;
+                SaveData.Instance.benchPos = new Vector2(gameObject.transform.position.x, gameObject.transform.position.y);
+                SaveData.Instance.SaveBench();
+                SaveData.Instance.SavePlayer();
+                SaveData.Instance.SaveMaps();
             }
         }
   }
