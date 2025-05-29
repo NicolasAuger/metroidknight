@@ -27,6 +27,7 @@ namespace Metroknight
     public bool playerHalfMana;
     public Vector2 playerPosition;
     public string lastScene;
+    public bool unlockedWallJump;
 
     // Shade stuff
     public Vector2 shadePos;
@@ -78,6 +79,7 @@ namespace Metroknight
         playerHalfMana = PlayerController.Instance.halfMana;
         playerPosition = PlayerController.Instance.transform.position;
         lastScene = SceneManager.GetActiveScene().name;
+        unlockedWallJump = PlayerController.Instance.unlockedWallJump;
 
         writer.Write(playerHealth);
         writer.Write(playerMana);
@@ -85,6 +87,7 @@ namespace Metroknight
         writer.Write(playerPosition.x);
         writer.Write(playerPosition.y);
         writer.Write(lastScene);
+        writer.Write(unlockedWallJump);
       }
     }
 
@@ -137,12 +140,14 @@ namespace Metroknight
           playerPosition.x = reader.ReadSingle();
           playerPosition.y = reader.ReadSingle();
           lastScene = reader.ReadString();
+          unlockedWallJump = reader.ReadBoolean();
 
           SceneManager.LoadScene(lastScene); // Load the last scene
           PlayerController.Instance.transform.position = playerPosition;
           PlayerController.Instance.Health = playerHealth;
           PlayerController.Instance.Mana = playerMana;
           PlayerController.Instance.halfMana = playerHalfMana;
+          PlayerController.Instance.unlockedWallJump = unlockedWallJump;
         }
       }
       else

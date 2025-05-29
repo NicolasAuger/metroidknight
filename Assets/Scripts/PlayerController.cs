@@ -142,6 +142,9 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    // Unlocks
+    public bool unlockedWallJump;
+
     public static PlayerController Instance;
 
     private void Awake()
@@ -220,8 +223,12 @@ public class PlayerController : MonoBehaviour
                 Flip();
                 Jump();
             }
-            WallSlide();
-            WallJump();
+
+            if (unlockedWallJump)
+            {
+                WallSlide();
+                WallJump();
+            }
             StartDash();
             Attack();
         }
