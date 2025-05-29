@@ -24,12 +24,20 @@ namespace Metroknight
       StartCoroutine(UIManager.Instance.sceneFader.Fade(SceneFader.FadeDirection.In));
       PlayerController.Instance.TakeDamage(1);
       yield return new WaitForSecondsRealtime(1f);
-      PlayerController.Instance.transform.position = GameManager.Instance.platformingRespawnPoint;
+
+      if (GameManager.Instance.platformingRespawnPoint == null)
+      {
+        PlayerController.Instance.transform.position = new Vector2(GameManager.Instance.defaultRespawnPoint.transform.position.x, GameManager.Instance.defaultRespawnPoint.transform.position.y);
+      }
+      else
+      {
+        PlayerController.Instance.transform.position = GameManager.Instance.platformingRespawnPoint;
+      }
       StartCoroutine(UIManager.Instance.sceneFader.Fade(SceneFader.FadeDirection.Out));
       yield return new WaitForSecondsRealtime(UIManager.Instance.sceneFader.fadeTime);
+      PlayerController.Instance.rb.gravityScale = 12f;
       PlayerController.Instance.pState.cutscene = false;
       PlayerController.Instance.pState.invincible = false;
-      PlayerController.Instance.rb.gravityScale = 12f;
 
       // Time.timeScale = 1;
     }
