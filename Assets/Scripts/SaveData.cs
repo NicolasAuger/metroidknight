@@ -28,6 +28,7 @@ namespace Metroknight
     public Vector2 playerPosition;
     public string lastScene;
     public bool unlockedWallJump;
+    public bool unlockedDash;
 
     // Shade stuff
     public Vector2 shadePos;
@@ -80,6 +81,7 @@ namespace Metroknight
         playerPosition = PlayerController.Instance.transform.position;
         lastScene = SceneManager.GetActiveScene().name;
         unlockedWallJump = PlayerController.Instance.unlockedWallJump;
+        unlockedDash = PlayerController.Instance.unlockedDash;
 
         writer.Write(playerHealth);
         writer.Write(playerMana);
@@ -88,6 +90,7 @@ namespace Metroknight
         writer.Write(playerPosition.y);
         writer.Write(lastScene);
         writer.Write(unlockedWallJump);
+        writer.Write(unlockedDash);
       }
     }
 
@@ -141,6 +144,7 @@ namespace Metroknight
           playerPosition.y = reader.ReadSingle();
           lastScene = reader.ReadString();
           unlockedWallJump = reader.ReadBoolean();
+          unlockedDash = reader.ReadBoolean();
 
           SceneManager.LoadScene(lastScene); // Load the last scene
           PlayerController.Instance.transform.position = playerPosition;
@@ -148,6 +152,7 @@ namespace Metroknight
           PlayerController.Instance.Mana = playerMana;
           PlayerController.Instance.halfMana = playerHalfMana;
           PlayerController.Instance.unlockedWallJump = unlockedWallJump;
+          PlayerController.Instance.unlockedDash = unlockedDash;
         }
       }
       else
@@ -158,10 +163,12 @@ namespace Metroknight
 
     public void SetDefaultPlayerValues()
     {
-       // If no player data exists, set default values
-        PlayerController.Instance.Health = PlayerController.Instance.maxHealth;
-        PlayerController.Instance.Mana = 0.5f;
-        PlayerController.Instance.halfMana = false;
+      // If no player data exists, set default values
+      PlayerController.Instance.Health = PlayerController.Instance.maxHealth;
+      PlayerController.Instance.Mana = 0.5f;
+      PlayerController.Instance.halfMana = false;
+      PlayerController.Instance.unlockedWallJump = false;
+      PlayerController.Instance.unlockedDash = false;
     }
 
     public void SaveShade()

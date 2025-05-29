@@ -144,6 +144,7 @@ public class PlayerController : MonoBehaviour
 
     // Unlocks
     public bool unlockedWallJump;
+    public bool unlockedDash;
 
     public static PlayerController Instance;
 
@@ -229,7 +230,11 @@ public class PlayerController : MonoBehaviour
                 WallSlide();
                 WallJump();
             }
-            StartDash();
+
+            if (unlockedDash)
+            {
+                StartDash();
+            }
             Attack();
         }
     }
