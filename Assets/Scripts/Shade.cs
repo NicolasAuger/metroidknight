@@ -13,20 +13,22 @@ namespace Metroknight
 
         public static Shade Instance;
 
-    private void Awake()
-    {
-      if (Instance != null && Instance != this)
-      {
-        Destroy(gameObject);
-      }
-      else
-      {
-        Instance = this;
-      }
-    }
+        private void Awake()
+        {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+                Instance = this;
+            }
+            // DontDestroyOnLoad(gameObject);
+            SaveData.Instance.SaveShade();
+        }
 
-    // Start is called before the first frame update
-    protected override void Start()
+        // Start is called before the first frame update
+        protected override void Start()
         {
             base.Start();
             ChangeState(EnemyStates.Shade_Idle);
@@ -42,44 +44,44 @@ namespace Metroknight
         }
 
         protected override void UpdateEnemyStates()
+        {
+            float _dist = Vector2.Distance(transform.position, PlayerController.Instance.transform.position);
+
+            switch (GetCurrentEnemyState)
             {
-                float _dist = Vector2.Distance(transform.position, PlayerController.Instance.transform.position);
+                case EnemyStates.Shade_Idle:
+                    rb.velocity = new Vector2(0, 0);
+                    if (_dist < chaseDistance)
+                    {
+                        ChangeState(EnemyStates.Shade_Chase);
+                    }
+                    break;
 
-                switch (GetCurrentEnemyState)
-                {
-                    case EnemyStates.Shade_Idle:
-                        rb.velocity = new Vector2(0, 0);
-                        if (_dist < chaseDistance)
-                        {
-                            ChangeState(EnemyStates.Shade_Chase);
-                        }
-                        break;
+                case EnemyStates.Shade_Chase:
+                    rb.MovePosition(Vector2.MoveTowards(transform.position, PlayerController.Instance.transform.position, speed * Time.deltaTime));
+                    FlipShade();
+                    if (_dist > chaseDistance)
+                    {
+                        ChangeState(EnemyStates.Shade_Idle);
+                    }
+                    break;
 
-                    case EnemyStates.Shade_Chase:
-                        rb.MovePosition(Vector2.MoveTowards(transform.position, PlayerController.Instance.transform.position, speed * Time.deltaTime));
-                        FlipShade();
-                        if (_dist > chaseDistance)
-                        {
-                            ChangeState(EnemyStates.Shade_Idle);
-                        }
-                        break;
+                case EnemyStates.Shade_Stunned:
+                    timer += Time.deltaTime;
+                    if (timer >= stunDuration)
+                    {
+                        ChangeState(EnemyStates.Shade_Idle);
+                        timer = 0;
+                    }
+                    // Handle stunned state
+                    break;
 
-                    case EnemyStates.Shade_Stunned:
-                        timer += Time.deltaTime;
-                        if (timer >= stunDuration)
-                        {
-                            ChangeState(EnemyStates.Shade_Idle);
-                            timer = 0;
-                        }
-                        // Handle stunned state
-                        break;
-
-                    case EnemyStates.Shade_Death:
-                        Death(Random.Range(5, 10));
-                        break;
-                }
-
+                case EnemyStates.Shade_Death:
+                    Death(Random.Range(5, 10));
+                    break;
             }
+
+        }
 
         void FlipShade() {
             sr.flipX = PlayerController.Instance.transform.position.x < transform.position.x;
@@ -110,8 +112,8 @@ namespace Metroknight
 
             if (GetCurrentEnemyState == EnemyStates.Shade_Death)
             {
-                // animator.SetTrigger("Death");
                 PlayerController.Instance.RestoreMana();
+                SaveData.Instance.SavePlayer();
                 animator.SetTrigger("Death");
                 Destroy(gameObject, 0.9f);
             }
@@ -121,8 +123,7 @@ namespace Metroknight
         {
             animator.SetTrigger("Attacking");
             PlayerController.Instance.TakeDamage(damage);
-      
-    }
+        }
 
         protected override void Death(float _destroyTime)
         {
@@ -132,8 +133,8 @@ namespace Metroknight
 
         private void OnDrawGizmos()
         {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, chaseDistance);
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, chaseDistance);
         }
     }
 }
