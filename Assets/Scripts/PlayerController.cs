@@ -25,6 +25,17 @@ public class PlayerController : MonoBehaviour
     private int airJumpCounter = 0;
     [Space(5)]
 
+    [Header("Wall Jumping Settings")]
+    [SerializeField] private float wallSlidingSpeed = 2f;
+    [SerializeField] private Transform wallCheck;
+    [SerializeField] private LayerMask wallLayer;
+    [SerializeField] private float wallJumpingDuration;
+    [SerializeField] private Vector2 wallJumpingPower;
+    float wallJumpingDirection;
+    bool isWallSliding;
+    bool isWallJumping;
+    [Space(5)]
+
 
     [Header("Dash")]
     [SerializeField] private float dashSpeed;
@@ -192,17 +203,25 @@ public class PlayerController : MonoBehaviour
         UpdateCameraYDampWhileFalling();
         FlashWhenInvincible();
 
-       if (pState.dashing) return;
+        if (pState.dashing) return;
 
-        Move();
+        if (!isWallJumping)
+        {
+            Move();
+        }
         Heal();
         CastSpells();
 
         if (pState.healing) return;
         if (pState.alive)
         {
-            Flip();
-            Jump();
+            if (!isWallJumping)
+            {
+                Flip();
+                Jump();
+            }
+            WallSlide();
+            WallJump();
             StartDash();
             Attack();
         }
@@ -310,22 +329,73 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-        void UpdateCameraYDampWhileFalling()
+    void UpdateCameraYDampWhileFalling()
+    {
+        // If falling past a certain speed threshold
+        if (rb.velocity.y < playerFallSpeedThreshold && !CameraManager.Instance.isLerpingYDamping && !CameraManager.Instance.hasLearpedYDamping)
         {
-            // If falling past a certain speed threshold
-            if (rb.velocity.y < playerFallSpeedThreshold && !CameraManager.Instance.isLerpingYDamping && !CameraManager.Instance.hasLearpedYDamping)
+            // Lerp the YDamping to a lower value
+            StartCoroutine(CameraManager.Instance.LerpYDaming(true));
+        }
+
+        // If standing still or moving up
+        if (rb.velocity.y >= 0 && !CameraManager.Instance.isLerpingYDamping && CameraManager.Instance.hasLearpedYDamping)
+        {
+            // Reset camera function
+            CameraManager.Instance.hasLearpedYDamping = false;
+            StartCoroutine(CameraManager.Instance.LerpYDaming(false));
+        }
+    }
+
+    private bool Walled()
+    {
+        return Physics2D.OverlapCircle(wallCheck.position, 0.2f, wallLayer);
+    }
+
+    void WallSlide()
+    {
+        // xAxis != 0 means the player is trying to move against the wall
+        if (!Grounded() && Walled() && xAxis != 0)
+        {
+            isWallSliding = true;
+            rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, -wallSlidingSpeed, float.MaxValue));
+        }
+        else
+        {
+            isWallSliding = false;
+        }
+    }
+
+    void WallJump()
+    {
+        if (isWallSliding)
+        {
+            isWallJumping = false;
+            wallJumpingDirection = !pState.lookingRight ? 1 : -1;
+            CancelInvoke(nameof(StopWallJumping));
+        }
+
+        if (Input.GetButtonDown("Jump") && isWallSliding)
+        {
+            isWallJumping = true;
+            rb.velocity = new Vector2(wallJumpingDirection * wallJumpingPower.x, wallJumpingPower.y);
+            dashed = false;
+            airJumpCounter = 0;
+
+            if ((pState.lookingRight && transform.eulerAngles.y == 0) || (!pState.lookingRight && transform.eulerAngles.y != 0))
             {
-                // Lerp the YDamping to a lower value
-                StartCoroutine(CameraManager.Instance.LerpYDaming(true));
+                pState.lookingRight = !pState.lookingRight;
+                int _yRotation = pState.lookingRight ? 0 : 180;
+                transform.eulerAngles = new Vector2(transform.eulerAngles.x, _yRotation);
             }
 
-            // If standing still or moving up
-            if (rb.velocity.y >= 0 && !CameraManager.Instance.isLerpingYDamping && CameraManager.Instance.hasLearpedYDamping)
-            {
-                // Reset camera function
-                CameraManager.Instance.hasLearpedYDamping = false;
-                StartCoroutine(CameraManager.Instance.LerpYDaming(false));
-            }
+            Invoke(nameof(StopWallJumping), wallJumpingDuration);
+        }
+    }
+
+    void StopWallJumping()
+    {
+        isWallJumping = false;
     }
 
     void StartDash() {
@@ -685,12 +755,15 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmos()
+        private void OnDrawGizmos()
         {
             Gizmos.color = Color.red;
             Gizmos.DrawWireCube(sideAttackTransform.position, sideAttackArea);
             Gizmos.DrawWireCube(upAttackTransform.position, upAttackArea);
             Gizmos.DrawWireCube(downAttackTransform.position, downAttackArea);
+
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireSphere(wallCheck.position, 0.2f);
         }
 
   }

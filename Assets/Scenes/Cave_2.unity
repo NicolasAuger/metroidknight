@@ -335,7 +335,7 @@ GameObject:
   - component: {fileID: 38766617}
   - component: {fileID: 38766619}
   - component: {fileID: 38766618}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Wall_03
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1355,7 +1355,7 @@ GameObject:
   - component: {fileID: 171141402}
   - component: {fileID: 171141404}
   - component: {fileID: 171141403}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Wall_Fill_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1539,7 +1539,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.27576178, y: 0}
+  m_Offset: {x: -0.33898383, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -1550,7 +1550,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 3.563087, y: 11.875}
+  m_Size: {x: 3.4366431, y: 11.875}
   m_EdgeRadius: 0
 --- !u!212 &172710356
 SpriteRenderer:
@@ -2987,7 +2987,7 @@ GameObject:
   - component: {fileID: 321213162}
   - component: {fileID: 321213164}
   - component: {fileID: 321213163}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Wall_02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4058,7 +4058,7 @@ GameObject:
   - component: {fileID: 423250274}
   - component: {fileID: 423250276}
   - component: {fileID: 423250275}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Wall_Fill_02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7727,7 +7727,7 @@ GameObject:
   - component: {fileID: 1039760301}
   - component: {fileID: 1039760303}
   - component: {fileID: 1039760302}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Wall_03 (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7743,7 +7743,7 @@ Transform:
   m_GameObject: {fileID: 1039760300}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 1, w: 0}
-  m_LocalPosition: {x: -24.14, y: -0.45, z: -0.01}
+  m_LocalPosition: {x: -23.88, y: -0.45, z: -0.01}
   m_LocalScale: {x: 0.58, y: 0.58, z: 0.58}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -7781,7 +7781,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.27576178, y: 0}
+  m_Offset: {x: -0.23502523, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -7792,7 +7792,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 3.563087, y: 11.875}
+  m_Size: {x: 3.6445603, y: 11.875}
   m_EdgeRadius: 0
 --- !u!212 &1039760303
 SpriteRenderer:
