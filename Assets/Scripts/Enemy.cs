@@ -23,28 +23,28 @@ public class Enemy : MonoBehaviour
     protected Animator animator;
 
 
-        protected enum EnemyStates
-        {
-            // Crawler
-            Crawler_Idle,
-            Crawler_Flip,
+    protected enum EnemyStates
+    {
+        // Crawler
+        Crawler_Idle,
+        Crawler_Flip,
 
-            // Bat
-            Bat_Idle,
-            Bat_Chase,
-            Bat_Stunned,
-            Bat_Death,
+        // Bat
+        Bat_Idle,
+        Bat_Chase,
+        Bat_Stunned,
+        Bat_Death,
 
-            // Charger
-            Charger_Idle,
-            Charger_Surprised,
-            Charger_Charge,
-        
-            // Shade
-            Shade_Idle,
-            Shade_Chase,
-            Shade_Stunned,
-            Shade_Death
+        // Charger
+        Charger_Idle,
+        Charger_Surprised,
+        Charger_Charge,
+    
+        // Shade
+        Shade_Idle,
+        Shade_Chase,
+        Shade_Stunned,
+        Shade_Death
 
      };
     protected EnemyStates currentEnemyState;
