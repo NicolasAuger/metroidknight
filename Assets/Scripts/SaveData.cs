@@ -33,6 +33,9 @@ namespace Metroknight
     public int playerHeartShards;
     public int playerMaxHealth;
     public int playerMaxTotalHealth;
+    public int playerManaOrbs;
+    public int playerOrbShards;
+    public float playerOrb0Fill, playerOrb1Fill, playerOrb2Fill;
 
     // Shade stuff
     public Vector2 shadePos;
@@ -43,10 +46,8 @@ namespace Metroknight
     public void Initialize()
     {
       // Tests purpose
-      // DeleteFile("/save.maps.data");
+      // DeleteFile("/save.player.data");
       // DeleteFile("/save.discovered_maps.data");
-
-      Debug.Log("Initializing SaveData...");
       EnsureFileExists("/save.bench.data");
       EnsureFileExists("/save.player.data");
       EnsureFileExists("/save.shade.data");
@@ -90,6 +91,8 @@ namespace Metroknight
         playerHeartShards = PlayerController.Instance.heartShards;
         playerMaxTotalHealth = PlayerController.Instance.maxTotalHealth;
         playerMaxHealth = PlayerController.Instance.maxHealth;
+        playerManaOrbs = PlayerController.Instance.manaOrbs;
+        playerOrbShards = PlayerController.Instance.orbShards;
 
         writer.Write(playerHealth);
         writer.Write(playerMana);
@@ -103,6 +106,11 @@ namespace Metroknight
         writer.Write(playerHeartShards);
         writer.Write(playerMaxTotalHealth);
         writer.Write(playerMaxHealth);
+        writer.Write(playerManaOrbs);
+        writer.Write(playerOrbShards);
+        writer.Write(PlayerController.Instance.manaOrbHandler.orbFills[0].fillAmount);
+        writer.Write(PlayerController.Instance.manaOrbHandler.orbFills[1].fillAmount);
+        writer.Write(PlayerController.Instance.manaOrbHandler.orbFills[2].fillAmount);
       }
     }
 
@@ -161,8 +169,11 @@ namespace Metroknight
           playerHeartShards = reader.ReadInt32();
           playerMaxTotalHealth = reader.ReadInt32();
           playerMaxHealth = reader.ReadInt32();
-
-          Debug.Log("Loading player max total health: " + playerMaxTotalHealth);
+          playerManaOrbs = reader.ReadInt32();
+          playerOrbShards = reader.ReadInt32();
+          playerOrb0Fill = reader.ReadSingle();
+          playerOrb1Fill = reader.ReadSingle();
+          playerOrb2Fill = reader.ReadSingle();
 
           SceneManager.LoadScene(lastScene); // Load the last scene
           PlayerController.Instance.transform.position = playerPosition;
@@ -175,8 +186,11 @@ namespace Metroknight
           PlayerController.Instance.heartShards = playerHeartShards;
           PlayerController.Instance.maxTotalHealth = playerMaxTotalHealth;
           PlayerController.Instance.maxHealth = playerMaxHealth;
-
-          Debug.Log("Player loaded with max health: " + playerMaxHealth);
+          PlayerController.Instance.manaOrbs = playerManaOrbs;
+          PlayerController.Instance.orbShards = playerOrbShards;
+          PlayerController.Instance.manaOrbHandler.orbFills[0].fillAmount = playerOrb0Fill;
+          PlayerController.Instance.manaOrbHandler.orbFills[1].fillAmount = playerOrb1Fill;
+          PlayerController.Instance.manaOrbHandler.orbFills[2].fillAmount = playerOrb2Fill;
         }
       }
       else
@@ -195,6 +209,8 @@ namespace Metroknight
       PlayerController.Instance.unlockedDash = false;
       PlayerController.Instance.unlockedMultipleJumps = false;
       PlayerController.Instance.heartShards = 0;
+      PlayerController.Instance.manaOrbs = 0;
+      PlayerController.Instance.orbShards = 0;
     }
 
     public void SaveShade()

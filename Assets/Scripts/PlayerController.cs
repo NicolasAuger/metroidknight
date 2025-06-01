@@ -86,6 +86,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float manaDrainSpeed;
     [SerializeField] private float manaGain;
     public bool halfMana;
+
+    public ManaOrbHandler manaOrbHandler;
+    public int orbShards;
+    public int manaOrbs;
     [Space(5)]
 
     [Header("Spell Casting")]
@@ -174,6 +178,8 @@ public class PlayerController : MonoBehaviour
 
         gravity = rb.gravityScale;
 
+        manaOrbHandler = FindObjectOfType<ManaOrbHandler>();
+
         Mana = mana;
         manaStorage.fillAmount = Mana;
         pState.alive = true;
@@ -181,6 +187,8 @@ public class PlayerController : MonoBehaviour
         SaveData.Instance.LoadPlayer();
         
         FindObjectOfType<HeartController>().InstantiateHeartContainers();
+        Debug.Log("Palyer mana orbs: " + manaOrbs);
+        Debug.Log("Mana orb handler " + manaOrbHandler.manaOrbs.Count);
 
         if (halfMana == true)
             {
@@ -492,7 +500,15 @@ public class PlayerController : MonoBehaviour
                 hitEnemies.Add(e);
 
                 if (objectsToHit[i].CompareTag("Enemy")) {
-                    Mana += manaGain;
+
+                    if ((!halfMana && Mana < 1) || (halfMana && Mana < 0.5f))
+                    {
+                        Mana += manaGain;
+                    }
+                    else
+                    {
+                        manaOrbHandler.UpdateMana(manaGain * 3);
+                    }
                 }
             }
         }
@@ -644,6 +660,8 @@ public class PlayerController : MonoBehaviour
             }
 
             // Drain mana
+            manaOrbHandler.usedMana = true;
+            manaOrbHandler.countDown = 3f;
             Mana -= Time.deltaTime * manaDrainSpeed;;
         } else {
             pState.healing = false;
@@ -701,6 +719,8 @@ public class PlayerController : MonoBehaviour
         }
 
         Mana -= manaSpellCost;
+        manaOrbHandler.usedMana = true;
+        manaOrbHandler.countDown = 3f;
         yield return new WaitForSeconds(0.35f);
         animator.SetBool("Casting", false);
         pState.casting = false;
