@@ -68,6 +68,9 @@ public class PlayerController : MonoBehaviour
     [Header("Health")]
     public int health;
     public int maxHealth;
+    public int maxTotalHealth = 10;
+    public int heartShards;
+
     [SerializeField] GameObject bloodSpurt;
     [SerializeField] float hitFlashSpeed;
     public delegate void OnHealthChangedDelegate();
@@ -176,15 +179,17 @@ public class PlayerController : MonoBehaviour
         pState.alive = true;
 
         SaveData.Instance.LoadPlayer();
+        
+        FindObjectOfType<HeartController>().InstantiateHeartContainers();
 
         if (halfMana == true)
-        {
-            UIManager.Instance.SwitchManaState(UIManager.ManaState.HalfMana);
-        }
-        else
-        {
-            UIManager.Instance.SwitchManaState(UIManager.ManaState.FullMana);
-        }
+            {
+                UIManager.Instance.SwitchManaState(UIManager.ManaState.HalfMana);
+            }
+            else
+            {
+                UIManager.Instance.SwitchManaState(UIManager.ManaState.FullMana);
+            }
 
         if (Health == 0)
         {

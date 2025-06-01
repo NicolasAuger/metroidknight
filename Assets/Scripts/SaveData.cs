@@ -30,6 +30,9 @@ namespace Metroknight
     public bool unlockedWallJump;
     public bool unlockedDash;
     public bool unlockedMultipleJumps;
+    public int playerHeartShards;
+    public int playerMaxHealth;
+    public int playerMaxTotalHealth;
 
     // Shade stuff
     public Vector2 shadePos;
@@ -84,6 +87,9 @@ namespace Metroknight
         unlockedWallJump = PlayerController.Instance.unlockedWallJump;
         unlockedDash = PlayerController.Instance.unlockedDash;
         unlockedMultipleJumps = PlayerController.Instance.unlockedMultipleJumps;
+        playerHeartShards = PlayerController.Instance.heartShards;
+        playerMaxTotalHealth = PlayerController.Instance.maxTotalHealth;
+        playerMaxHealth = PlayerController.Instance.maxHealth;
 
         writer.Write(playerHealth);
         writer.Write(playerMana);
@@ -94,6 +100,9 @@ namespace Metroknight
         writer.Write(unlockedWallJump);
         writer.Write(unlockedDash);
         writer.Write(unlockedMultipleJumps);
+        writer.Write(playerHeartShards);
+        writer.Write(playerMaxTotalHealth);
+        writer.Write(playerMaxHealth);
       }
     }
 
@@ -149,6 +158,11 @@ namespace Metroknight
           unlockedWallJump = reader.ReadBoolean();
           unlockedDash = reader.ReadBoolean();
           unlockedMultipleJumps = reader.ReadBoolean();
+          playerHeartShards = reader.ReadInt32();
+          playerMaxTotalHealth = reader.ReadInt32();
+          playerMaxHealth = reader.ReadInt32();
+
+          Debug.Log("Loading player max total health: " + playerMaxTotalHealth);
 
           SceneManager.LoadScene(lastScene); // Load the last scene
           PlayerController.Instance.transform.position = playerPosition;
@@ -158,6 +172,11 @@ namespace Metroknight
           PlayerController.Instance.unlockedWallJump = unlockedWallJump;
           PlayerController.Instance.unlockedDash = unlockedDash;
           PlayerController.Instance.unlockedMultipleJumps = unlockedMultipleJumps;
+          PlayerController.Instance.heartShards = playerHeartShards;
+          PlayerController.Instance.maxTotalHealth = playerMaxTotalHealth;
+          PlayerController.Instance.maxHealth = playerMaxHealth;
+
+          Debug.Log("Player loaded with max health: " + playerMaxHealth);
         }
       }
       else
@@ -175,6 +194,7 @@ namespace Metroknight
       PlayerController.Instance.unlockedWallJump = false;
       PlayerController.Instance.unlockedDash = false;
       PlayerController.Instance.unlockedMultipleJumps = false;
+      PlayerController.Instance.heartShards = 0;
     }
 
     public void SaveShade()
