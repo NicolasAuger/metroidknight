@@ -11,6 +11,7 @@ namespace Metroknight {
     [SerializeField] GameObject halfMana, fullMana;
     [SerializeField] GameObject deathScreen;
     public GameObject mapHandler;
+    public GameObject inventory;
 
     public enum ManaState
     {

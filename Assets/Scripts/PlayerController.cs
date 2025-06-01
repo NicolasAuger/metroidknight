@@ -115,6 +115,7 @@ public class PlayerController : MonoBehaviour
     private float gravity;
     private float xAxis, yAxis;
     bool openMap;
+    bool openInventory;
     private bool canDash = true;
     private bool dashed;
     private SpriteRenderer sr;
@@ -215,6 +216,7 @@ public class PlayerController : MonoBehaviour
         {
             GetInputs();
             ToggleMap();
+            ToggleInventory();
         }
 
         UpdateJumpVariables();
@@ -272,6 +274,7 @@ public class PlayerController : MonoBehaviour
         yAxis = Input.GetAxisRaw("Vertical");
         attacking = Input.GetButtonDown("Attack");
         openMap = Input.GetButton("Map");
+        openInventory = Input.GetButton("Inventory");
 
         if (Input.GetButton("Cast/Heal"))
         {
@@ -798,16 +801,27 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-        private void OnDrawGizmos()
+    public void ToggleInventory()
+    {
+        if (openInventory)
         {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireCube(sideAttackTransform.position, sideAttackArea);
-            Gizmos.DrawWireCube(upAttackTransform.position, upAttackArea);
-            Gizmos.DrawWireCube(downAttackTransform.position, downAttackArea);
-
-            Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(wallCheck.position, 0.2f);
+            UIManager.Instance.inventory.SetActive(true);
         }
+        else
+        {
+            UIManager.Instance.inventory.SetActive(false);
+        }
+    }
 
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireCube(sideAttackTransform.position, sideAttackArea);
+        Gizmos.DrawWireCube(upAttackTransform.position, upAttackArea);
+        Gizmos.DrawWireCube(downAttackTransform.position, downAttackArea);
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(wallCheck.position, 0.2f);
+    }
   }
 }
