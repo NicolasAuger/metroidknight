@@ -37,6 +37,7 @@ namespace Metroknight
             GameObject _particles = Instantiate(unlockParticles, transform.position, Quaternion.identity);
             Destroy(_particles, .5f);
             yield return new WaitForSeconds(0.5f);
+            gameObject.GetComponent<SpriteRenderer>().enabled = false;
             canvasUI.SetActive(true);
             PlayerController.Instance.unlockedWallJump = true;
             SaveData.Instance.SavePlayer();

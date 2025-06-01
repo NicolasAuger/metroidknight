@@ -71,10 +71,10 @@ namespace Metroknight
         IEnumerator ShowCanvas()
         {
             GameObject _particles = Instantiate(unlockParticles, transform.position, Quaternion.identity);
-            PlayerController.Instance.transform.position = transform.position;
             Destroy(_particles, .75f);
             yield return new WaitForSecondsRealtime(0.75f);
             Time.timeScale = 0f; // Pause the game
+            gameObject.GetComponent<SpriteRenderer>().enabled = false;
             canvasUI.SetActive(true);
 
             orbShards.initialFillAmount = PlayerController.Instance.orbShards * .34f;
