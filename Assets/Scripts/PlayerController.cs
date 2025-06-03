@@ -197,8 +197,6 @@ namespace Metroknight
             SaveData.Instance.LoadPlayer();
 
             FindObjectOfType<HeartController>().InstantiateHeartContainers();
-            Debug.Log("Palyer mana orbs: " + manaOrbs);
-            Debug.Log("Mana orb handler " + manaOrbHandler.manaOrbs.Count);
 
             if (halfMana == true)
             {
@@ -219,6 +217,8 @@ namespace Metroknight
         // Update is called once per frame
         void Update()
         {
+            if (GameManager.Instance.gameIsPaused) return;
+
             RestoreTimeScale();
             if (pState.cutscene) return;
             if (pState.alive)

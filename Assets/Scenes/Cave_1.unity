@@ -2194,8 +2194,8 @@ MonoBehaviour:
   m_ShadowVolumeIntensityEnabled: 0
   m_ShadowVolumeIntensity: 0.75
   m_LocalBounds:
-    m_Center: {x: 10.6557, y: -1.9698001, z: 0}
-    m_Extent: {x: 13.286201, y: 4.4636, z: 0}
+    m_Center: {x: 10.64305, y: -1.96545, z: 0}
+    m_Extent: {x: 13.285951, y: 4.45695, z: 0}
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
   m_PointLightInnerRadius: 0
@@ -11944,8 +11944,8 @@ MonoBehaviour:
   m_ShadowVolumeIntensityEnabled: 0
   m_ShadowVolumeIntensity: 0.75
   m_LocalBounds:
-    m_Center: {x: 13.971359, y: 5.1247, z: 0}
-    m_Extent: {x: 33.89016, y: 5.1491, z: 0}
+    m_Center: {x: 13.972059, y: 5.11515, z: 0}
+    m_Extent: {x: 33.889458, y: 5.1542497, z: 0}
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
   m_PointLightInnerRadius: 0
@@ -12595,6 +12595,14 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1455251317794442614, guid: 998bdd53e271d4f909577c262cf54d2a, type: 3}
+      propertyPath: fadeTime
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 1455251317794442614, guid: 998bdd53e271d4f909577c262cf54d2a, type: 3}
+      propertyPath: pauseMenu
+      value: 
+      objectReference: {fileID: 3947251749493228859}
+    - target: {fileID: 1455251317794442614, guid: 998bdd53e271d4f909577c262cf54d2a, type: 3}
       propertyPath: defaultRespawnPoint
       value: 
       objectReference: {fileID: 834958297}
@@ -12714,11 +12722,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2824448530759520299, guid: 4fad0a7e804074f5781a002c49b43f97, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -5.6
+      value: -4.7
       objectReference: {fileID: 0}
     - target: {fileID: 2824448530759520299, guid: 4fad0a7e804074f5781a002c49b43f97, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.5
+      value: 1.44
       objectReference: {fileID: 0}
     - target: {fileID: 2824448530759520299, guid: 4fad0a7e804074f5781a002c49b43f97, type: 3}
       propertyPath: m_LocalPosition.z
@@ -13096,6 +13104,34 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4027315189862038759, guid: e94619849125a40a59b95e74349de57f, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4027315189862038759, guid: e94619849125a40a59b95e74349de57f, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4027315189862038759, guid: e94619849125a40a59b95e74349de57f, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 959679006}
+    - target: {fileID: 4027315189862038759, guid: e94619849125a40a59b95e74349de57f, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4027315189862038759, guid: e94619849125a40a59b95e74349de57f, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: UnPauseGame
+      objectReference: {fileID: 0}
+    - target: {fileID: 4027315189862038759, guid: e94619849125a40a59b95e74349de57f, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: Metroknight.GameManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 4027315189862038759, guid: e94619849125a40a59b95e74349de57f, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 4503092342543650537, guid: e94619849125a40a59b95e74349de57f, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -13253,6 +13289,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e94619849125a40a59b95e74349de57f, type: 3}
+--- !u!114 &3947251749493228859 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6179080688203497940, guid: e94619849125a40a59b95e74349de57f, type: 3}
+  m_PrefabInstance: {fileID: 3947251749493228858}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88e8e0dba15574f89ba30848924ce093, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &5185368875655331834
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13452,14 +13499,6 @@ PrefabInstance:
     - target: {fileID: 4347755478662383007, guid: 958a2cb52a7934a4687569a61b9c8ea5, type: 3}
       propertyPath: m_Name
       value: IncreaseMaxMana
-      objectReference: {fileID: 0}
-    - target: {fileID: 6587516453553933284, guid: 958a2cb52a7934a4687569a61b9c8ea5, type: 3}
-      propertyPath: m_Radius
-      value: 0.57269734
-      objectReference: {fileID: 0}
-    - target: {fileID: 6587516453553933284, guid: 958a2cb52a7934a4687569a61b9c8ea5, type: 3}
-      propertyPath: m_Offset.y
-      value: -0.004224777
       objectReference: {fileID: 0}
     - target: {fileID: 8737578165627340416, guid: 958a2cb52a7934a4687569a61b9c8ea5, type: 3}
       propertyPath: m_LocalPosition.x

@@ -20,24 +20,35 @@ public class SceneFader : MonoBehaviour
         fadeOutUIImage = GetComponent<Image>();
     }
 
-    public IEnumerator Fade(FadeDirection _fadeDirection) {
-        float _alpha = _fadeDirection == FadeDirection.Out ? 1.1f : 0;
-        float _fadeEndValue = _fadeDirection == FadeDirection.Out ? 0 : 1.1f;
+    public void CallFadeAndLoadScene(string _sceneToLoad)
+    {
+        StartCoroutine(FadeAndLoadScene(FadeDirection.In, _sceneToLoad));
+    }
 
-        if (_fadeDirection == FadeDirection.Out) {
-            while (_alpha >= _fadeEndValue) {
-                SetColorImage(ref _alpha, _fadeDirection);
-                yield return null;
+    public IEnumerator Fade(FadeDirection _fadeDirection)
+        {
+            float _alpha = _fadeDirection == FadeDirection.Out ? 1.1f : 0;
+            float _fadeEndValue = _fadeDirection == FadeDirection.Out ? 0 : 1.1f;
+
+            if (_fadeDirection == FadeDirection.Out)
+            {
+                while (_alpha >= _fadeEndValue)
+                {
+                    SetColorImage(ref _alpha, _fadeDirection);
+                    yield return null;
+                }
+                fadeOutUIImage.enabled = false;
             }
-            fadeOutUIImage.enabled = false;
-        } else {
-            fadeOutUIImage.enabled = true;
-            while (_alpha <= _fadeEndValue) {
-                SetColorImage(ref _alpha, _fadeDirection);
-                yield return null;
+            else
+            {
+                fadeOutUIImage.enabled = true;
+                while (_alpha <= _fadeEndValue)
+                {
+                    SetColorImage(ref _alpha, _fadeDirection);
+                    yield return null;
+                }
             }
         }
-    }
 
     public IEnumerator FadeAndLoadScene(FadeDirection _fadeDirection, string _sceneToLoad) {
         fadeOutUIImage.enabled = true;

@@ -12,6 +12,10 @@ namespace Metroknight
         [SerializeField] Bench bench;
         public GameObject shade;
 
+        [SerializeField] private FadeUI pauseMenu;
+        [SerializeField] private float fadeTime;
+        public bool gameIsPaused;
+
         // Singleton instance
         public static GameManager Instance { get; private set; }
 
@@ -37,6 +41,19 @@ namespace Metroknight
             {
                 SaveData.Instance.SavePlayer();
             }
+
+            if (Input.GetKeyDown(KeyCode.Escape) && !gameIsPaused)
+            {
+                pauseMenu.FadeUIIn(fadeTime);
+                Time.timeScale = 0f; // Pause the game
+                gameIsPaused = true;
+            }
+        }
+
+        public void UnPauseGame()
+        {
+            Time.timeScale = 1f; // Resume the game
+            gameIsPaused = false;
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
