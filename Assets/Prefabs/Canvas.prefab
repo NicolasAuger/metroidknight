@@ -3237,6 +3237,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 6179080688203497940}
+        m_TargetAssemblyTypeName: Metroknight.FadeUI, Assembly-CSharp
+        m_MethodName: FadeUIOut
+        m_Mode: 4
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0.25
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 1455251317794442614, guid: 998bdd53e271d4f909577c262cf54d2a, type: 3}
         m_TargetAssemblyTypeName: Metroknight.GameManager, Assembly-CSharp
         m_MethodName: UnPauseGame
@@ -5085,6 +5097,7 @@ MonoBehaviour:
   hover: {fileID: 8300000, guid: dd2e68d7794f440b2a3c687c267d0d37, type: 3}
   click: {fileID: 8300000, guid: 3ae2885e7cdbb42d080b0ef47a8b98df, type: 3}
   gameStart: {fileID: 0}
+  horrorMoodSound: {fileID: 0}
 --- !u!82 &9054498318681847336
 AudioSource:
   m_ObjectHideFlags: 0
@@ -8077,6 +8090,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 1455251317794442614, guid: 998bdd53e271d4f909577c262cf54d2a, type: 3}
+        m_TargetAssemblyTypeName: Metroknight.GameManager, Assembly-CSharp
+        m_MethodName: SaveGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 5990413719621252033}
         m_TargetAssemblyTypeName: Metroknight.SceneFader, Assembly-CSharp
         m_MethodName: CallFadeAndLoadScene

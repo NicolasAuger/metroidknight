@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -11,8 +9,12 @@ namespace Metroknight {
         [SerializeField] private Vector2 exitDirection;
         [SerializeField] private float exitTime;
 
+        private AudioSource audioSource;
+        [SerializeField] private AudioClip transitionSound;
+
         private void Start()
         {
+            audioSource = GetComponent<AudioSource>();
             if (transitionTo == GameManager.Instance.transitionedFromScene)
             {
                 PlayerController.Instance.transform.position = startPoint.position;
@@ -29,6 +31,7 @@ namespace Metroknight {
             {
                 CheckShadeData();
                 GameManager.Instance.transitionedFromScene = SceneManager.GetActiveScene().name;
+                audioSource.PlayOneShot(transitionSound);
                 PlayerController.Instance.pState.cutscene = true;
                 PlayerController.Instance.pState.invincible = true;
                 StartCoroutine(UIManager.Instance.sceneFader.FadeAndLoadScene(SceneFader.FadeDirection.In, transitionTo));

@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Metroknight
@@ -9,6 +8,8 @@ namespace Metroknight
         bool used;
         [SerializeField] private GameObject unlockParticles;
         [SerializeField] private GameObject canvasUI;
+        private AudioSource audioSource;
+        [SerializeField] private AudioClip unlockSound;
 
         void Start()
         {
@@ -16,20 +17,22 @@ namespace Metroknight
             {
                 Destroy(gameObject);
             }
+            audioSource = GetComponent<AudioSource>();
         }
 
-    void Update()
-    {
-        CheckToHideCanvas();
-    }
+        void Update()
+        {
+            CheckToHideCanvas();
+        }
 
-    private void OnTriggerEnter2D(Collider2D _collision)
+        private void OnTriggerEnter2D(Collider2D _collision)
         {
             if (_collision.CompareTag("Player") && !used)
             {
                 used = true;
-                StartCoroutine(ShowCanvas())
-;            }
+                audioSource.PlayOneShot(unlockSound);
+                StartCoroutine(ShowCanvas());
+            }
         }
 
         IEnumerator ShowCanvas()
@@ -45,7 +48,7 @@ namespace Metroknight
 
         private void CheckToHideCanvas()
         {
-            if (Input.GetButtonDown("Escape") && canvasUI.activeSelf)
+            if (Input.GetKeyDown(KeyCode.X) && canvasUI.activeSelf)
             {
                 canvasUI.SetActive(false);
                 Destroy(gameObject);

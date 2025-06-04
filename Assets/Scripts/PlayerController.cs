@@ -109,6 +109,21 @@ namespace Metroknight
 
         [Header("Camera Settings")]
         [SerializeField] private float playerFallSpeedThreshold = -10;
+        [Space(5)]
+
+        [Header("Audio Settings")]
+        [SerializeField] private AudioClip jumpSound;
+        [SerializeField] private AudioClip dashSound;
+        [SerializeField] private AudioClip attackSound;
+        [SerializeField] private AudioClip healSound;
+        [SerializeField] private AudioClip castSound;
+        [SerializeField] private AudioClip hurtSound;
+        [SerializeField] private AudioClip fallSound;
+        [SerializeField] private AudioClip deadSound;
+        [SerializeField] private AudioClip gameOverSound;
+        private bool landingSoundPlayed;
+        private bool healingSoundPlayed;
+        [Space(5)]
 
         [HideInInspector] public PlayerStateList pState;
         public Rigidbody2D rb;
@@ -120,6 +135,7 @@ namespace Metroknight
         private bool canDash = true;
         private bool dashed;
         private SpriteRenderer sr;
+        private AudioSource audioSource;
 
         public int Health
         {
@@ -185,6 +201,7 @@ namespace Metroknight
             rb = GetComponent<Rigidbody2D>();
             animator = GetComponent<Animator>();
             sr = GetComponent<SpriteRenderer>();
+            audioSource = GetComponent<AudioSource>();
 
             gravity = rb.gravityScale;
 
@@ -338,27 +355,31 @@ namespace Metroknight
         public void Jump()
         {
             // Jump only if the player is grounded
-            if (!pState.jumping)
+            if (jumpBufferCounter > 0 && coyoteTimeCounter > 0 && !pState.jumping)
             {
-                if (jumpBufferCounter > 0 && coyoteTimeCounter > 0)
+                // Check for the jump button being pressed to play the sound only once, since called from Update() method 
+                if (Input.GetButtonDown("Jump"))
                 {
-                    rb.velocity = new Vector3(rb.velocity.x, jumpForce);
-                    pState.jumping = true;
+                    audioSource.PlayOneShot(jumpSound, .75f);
                 }
-                // Multiple jumps
-                else if (!Grounded() && airJumpCounter < maxAirJumps && Input.GetButtonDown("Jump") && unlockedMultipleJumps)
-                {
-                    pState.jumping = true;
-                    airJumpCounter++;
-                    rb.velocity = new Vector3(rb.velocity.x, jumpForce);
-                }
+                rb.velocity = new Vector3(rb.velocity.x, jumpForce);
+                pState.jumping = true;
+            }
+
+            // Multiple jumps
+            if (!Grounded() && airJumpCounter < maxAirJumps && Input.GetButtonDown("Jump") && unlockedMultipleJumps)
+            {
+                audioSource.PlayOneShot(jumpSound, .75f);
+                pState.jumping = true;
+                airJumpCounter++;
+                rb.velocity = new Vector3(rb.velocity.x, jumpForce);
             }
 
             // Variable jump height (rb.velocity.y > 3 in the tutorial)
             if (Input.GetButtonUp("Jump") && rb.velocity.y > 0)
             {
-                rb.velocity = new Vector2(rb.velocity.x, 0);
                 pState.jumping = false;
+                rb.velocity = new Vector2(rb.velocity.x, 0);
             }
 
             // Clamp the fall speed
@@ -371,6 +392,12 @@ namespace Metroknight
         {
             if (Grounded())
             {
+                if (!landingSoundPlayed)
+                {
+                    // Try to lower horrible fall sound
+                    audioSource.PlayOneShot(fallSound, .2f);
+                    landingSoundPlayed = true;
+                }
                 pState.jumping = false;
                 coyoteTimeCounter = coyoteTime;
                 airJumpCounter = 0;
@@ -380,6 +407,7 @@ namespace Metroknight
                 // Time.deltaTime is the time between frames
                 // So we decrease coyoteTimeCounter by 1 every second
                 coyoteTimeCounter -= Time.deltaTime;
+                landingSoundPlayed = false;
             }
 
             if (Input.GetButtonDown("Jump"))
@@ -485,6 +513,7 @@ namespace Metroknight
             canDash = false;
             pState.dashing = true;
             animator.SetTrigger("Dashing");
+            audioSource.PlayOneShot(dashSound, .8f);
             rb.gravityScale = 0;
             int _dir = pState.lookingRight ? 1 : -1;
             // if (pState.lookingRight) {
@@ -508,6 +537,7 @@ namespace Metroknight
             {
                 timeSinceLastAttack = 0;
                 animator.SetTrigger("Attacking");
+                audioSource.PlayOneShot(attackSound, .7f);
 
                 if (yAxis == 0 || yAxis < 0 && Grounded())
                 {
@@ -649,6 +679,8 @@ namespace Metroknight
         {
             if (pState.alive)
             {
+                audioSource.PlayOneShot(hurtSound);
+
                 Health -= Mathf.RoundToInt(_damage);
                 if (Health <= 0)
                 {
@@ -736,9 +768,14 @@ namespace Metroknight
 
         void Heal()
         {
-            if (Input.GetButton("Cast/Heal") && castOrHealTimer > 0.05f && Health < maxHealth && Mana > 0 && Grounded() && !pState.dashing)
+            if (Input.GetButton("Cast/Heal") && castOrHealTimer > 0.1f && Health < maxHealth && Mana > 0 && !pState.jumping && !pState.dashing)
             {
                 pState.healing = true;
+                if (!healingSoundPlayed)
+                {
+                    audioSource.PlayOneShot(healSound, .8f);
+                    healingSoundPlayed = true;
+                }
                 animator.SetBool("Healing", true);
 
                 // Healing
@@ -746,6 +783,7 @@ namespace Metroknight
                 if (healTimer >= timeToHeal)
                 {
                     Health++;
+                    healingSoundPlayed = false;
                     healTimer = 0;
                 }
 
@@ -757,6 +795,8 @@ namespace Metroknight
             else
             {
                 pState.healing = false;
+                healingSoundPlayed = false;
+                // audioSource.Stop();
                 healTimer = 0;
                 animator.SetBool("Healing", false);
             }
@@ -764,7 +804,7 @@ namespace Metroknight
 
         void CastSpells()
         {
-            if (Input.GetButtonUp("Cast/Heal") && castOrHealTimer <= 0.05f && Mana >= manaSpellCost && timeSinceLastCast >= timeBetweenCast)
+            if (Input.GetButtonUp("Cast/Heal") && castOrHealTimer <= 0.1f && Mana >= manaSpellCost && timeSinceLastCast >= timeBetweenCast)
             {
                 pState.casting = true;
                 rb.gravityScale = 0;
@@ -800,6 +840,7 @@ namespace Metroknight
             // Side cast
             if (yAxis == 0 || (yAxis < 0 && Grounded()))
             {
+                audioSource.PlayOneShot(castSound);
                 GameObject _fireball = Instantiate(sideSpellFireball, sideAttackTransform.position, Quaternion.identity);
 
                 // Flip fireball
@@ -817,6 +858,7 @@ namespace Metroknight
             // Up cast
             else if (yAxis > 0)
             {
+                audioSource.PlayOneShot(castSound);
                 Instantiate(upSpellExplosion, transform);
                 rb.velocity = Vector2.zero;
             }
@@ -824,6 +866,7 @@ namespace Metroknight
             // Down cast
             else if (yAxis < 0 && !Grounded())
             {
+                audioSource.PlayOneShot(castSound);
                 downSpellFireball.SetActive(true);
             }
 
@@ -868,6 +911,7 @@ namespace Metroknight
             GameObject _bloodSpurtParticles = Instantiate(bloodSpurt, transform.position, Quaternion.identity);
             Destroy(_bloodSpurtParticles, 1.5f);
             animator.SetTrigger("Death");
+            audioSource.PlayOneShot(deadSound);
             rb.constraints = RigidbodyConstraints2D.FreezePosition;
             GetComponent<Collider2D>().enabled = false;
 
@@ -875,6 +919,7 @@ namespace Metroknight
             StartCoroutine(UIManager.Instance.ActivateDeathScreen());
 
             yield return new WaitForSeconds(0.9f);
+            audioSource.PlayOneShot(gameOverSound);
             Instantiate(GameManager.Instance.shade, transform.position, Quaternion.identity);
         }
 

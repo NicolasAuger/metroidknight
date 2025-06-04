@@ -9,6 +9,8 @@ namespace Metroknight
         bool used;
         [SerializeField] private GameObject unlockParticles;
         [SerializeField] private GameObject canvasUI;
+        private AudioSource audioSource;
+        [SerializeField] private AudioClip unlockSound;
 
         void Start()
         {
@@ -16,6 +18,7 @@ namespace Metroknight
             {
                 Destroy(gameObject);
             }
+            audioSource = GetComponent<AudioSource>();
         }
 
         void Update()
@@ -28,6 +31,7 @@ namespace Metroknight
             if (_collision.CompareTag("Player") && !used)
             {
                 used = true;
+                audioSource.PlayOneShot(unlockSound);
                 StartCoroutine(ShowCanvas());
             }
         }
@@ -45,7 +49,7 @@ namespace Metroknight
 
         private void CheckToHideCanvas()
         {
-            if (Input.GetButtonDown("Escape") && canvasUI.activeSelf)
+            if (Input.GetKeyDown(KeyCode.X) && canvasUI.activeSelf)
             {
                 canvasUI.SetActive(false);
                 Destroy(gameObject);

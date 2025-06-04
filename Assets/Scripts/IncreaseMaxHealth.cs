@@ -13,8 +13,10 @@ namespace Metroknight
         private Vector2 initialPosition;
         private Rigidbody2D rb;
         private bool upwards = false;
-
         [SerializeField] HeartShards heartshards;
+        private AudioSource audioSource;
+        [SerializeField] private AudioClip unlockSound;
+
 
         void Awake()
         {
@@ -29,6 +31,7 @@ namespace Metroknight
             }
             initialPosition = transform.position;
             upwards = true;
+            audioSource = GetComponent<AudioSource>();
         }
 
         void Update()
@@ -42,6 +45,7 @@ namespace Metroknight
             if (_collision.CompareTag("Player") && !used)
             {
                 used = true;
+                audioSource.PlayOneShot(unlockSound);
                 StartCoroutine(ShowCanvas());
             }
         }
@@ -88,7 +92,7 @@ namespace Metroknight
 
         private void CheckToHideCanvas()
         {
-            if (Input.GetButtonDown("Escape") && canvasUI.activeSelf)
+            if (Input.GetKeyDown(KeyCode.X) && canvasUI.activeSelf)
             {
                 canvasUI.SetActive(false);
                 Time.timeScale = 1f; // Resume the game

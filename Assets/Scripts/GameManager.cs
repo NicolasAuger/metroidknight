@@ -19,6 +19,9 @@ namespace Metroknight
         // Singleton instance
         public static GameManager Instance { get; private set; }
 
+        private AudioSource audioSource;
+        [SerializeField] private AudioClip zoneSound;
+
         private void Awake()
         {
             // Check if instance already exists
@@ -35,6 +38,14 @@ namespace Metroknight
             DontDestroyOnLoad(gameObject); // Persist across scenes
         }
 
+        private void Start()
+        {
+            audioSource = GetComponent<AudioSource>();
+            audioSource.loop = true;
+            audioSource.clip = zoneSound;
+            audioSource.Play();
+        }
+
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.P))
@@ -47,6 +58,7 @@ namespace Metroknight
                 pauseMenu.FadeUIIn(fadeTime);
                 Time.timeScale = 0f; // Pause the game
                 gameIsPaused = true;
+                audioSource.volume = .3f; // Lower volume when paused
             }
         }
 
@@ -54,6 +66,12 @@ namespace Metroknight
         {
             Time.timeScale = 1f; // Resume the game
             gameIsPaused = false;
+            audioSource.volume = 1f; // Restore volume
+        }
+
+        public void SaveGame()
+        {
+            SaveData.Instance.SavePlayer();
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)

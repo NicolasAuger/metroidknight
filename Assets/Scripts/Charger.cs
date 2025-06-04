@@ -12,6 +12,7 @@ public class Charger : Enemy
     [SerializeField] private float chargeDuration;
     [SerializeField] private float jumpForce;
     [SerializeField] private LayerMask whatIsGround;
+    [SerializeField] private AudioClip surprisedSound;
     float timer;
 
     protected override void Start()
@@ -68,6 +69,7 @@ public class Charger : Enemy
                     break;
 
                 case EnemyStates.Charger_Surprised:
+                    audioSource.PlayOneShot(surprisedSound);
                     rb.velocity = new Vector2(0, jumpForce);
                     ChangeState(EnemyStates.Charger_Charge);
                     break;

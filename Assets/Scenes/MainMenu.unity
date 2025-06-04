@@ -6440,6 +6440,7 @@ MonoBehaviour:
   hover: {fileID: 8300000, guid: dd2e68d7794f440b2a3c687c267d0d37, type: 3}
   click: {fileID: 8300000, guid: 3ae2885e7cdbb42d080b0ef47a8b98df, type: 3}
   gameStart: {fileID: 8300000, guid: 8abecb652a19a4e2b8594226ee2ceda2, type: 3}
+  horrorMoodSound: {fileID: 8300000, guid: 4608da78df7764b1a98c359183f0b046, type: 3}
 --- !u!82 &747410883
 AudioSource:
   m_ObjectHideFlags: 0
@@ -8002,8 +8003,8 @@ MonoBehaviour:
   m_ShadowVolumeIntensityEnabled: 0
   m_ShadowVolumeIntensity: 0.75
   m_LocalBounds:
-    m_Center: {x: -0.23075008, y: -0.13234997, z: 0}
-    m_Extent: {x: 20.988651, y: 20.941849, z: 0}
+    m_Center: {x: -0.22200012, y: -0.12860012, z: 0}
+    m_Extent: {x: 20.9967, y: 20.9281, z: 0}
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
   m_PointLightInnerRadius: 0
