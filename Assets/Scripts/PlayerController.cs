@@ -136,6 +136,7 @@ namespace Metroknight
         private bool dashed;
         private SpriteRenderer sr;
         private AudioSource audioSource;
+        public AudioSource runningAudioSource;
 
         public int Health
         {
@@ -319,6 +320,17 @@ namespace Metroknight
             if (pState.healing) rb.velocity = new Vector2(0, 0);
             rb.velocity = new Vector2(xAxis * walkSpeed, rb.velocity.y);
             animator.SetBool("Walking", rb.velocity.x != 0 && Grounded());
+            if (rb.velocity.x != 0 && Grounded())
+            {
+                if (!runningAudioSource.isPlaying)
+                {
+                    runningAudioSource.Play();
+                }
+            }
+            else
+            {
+                runningAudioSource.Stop();
+            }
         }
 
         public bool Grounded()
@@ -537,7 +549,7 @@ namespace Metroknight
             {
                 timeSinceLastAttack = 0;
                 animator.SetTrigger("Attacking");
-                audioSource.PlayOneShot(attackSound, .7f);
+                audioSource.PlayOneShot(attackSound, .8f);
 
                 if (yAxis == 0 || yAxis < 0 && Grounded())
                 {

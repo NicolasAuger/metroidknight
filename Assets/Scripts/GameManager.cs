@@ -43,6 +43,7 @@ namespace Metroknight
             audioSource = GetComponent<AudioSource>();
             audioSource.loop = true;
             audioSource.clip = zoneSound;
+            audioSource.volume = .4f;
             audioSource.Play();
         }
 
@@ -58,7 +59,7 @@ namespace Metroknight
                 pauseMenu.FadeUIIn(fadeTime);
                 Time.timeScale = 0f; // Pause the game
                 gameIsPaused = true;
-                audioSource.volume = .3f; // Lower volume when paused
+                audioSource.volume = .2f; // Lower volume when paused
             }
         }
 
