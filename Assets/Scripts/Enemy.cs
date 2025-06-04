@@ -1,4 +1,5 @@
 using UnityEngine;
+using Cinemachine;
 
 namespace Metroknight {
     public class Enemy : MonoBehaviour
@@ -24,6 +25,7 @@ namespace Metroknight {
         protected SpriteRenderer sr;
         protected Animator animator;
         protected AudioSource audioSource;
+        protected CinemachineImpulseSource impulseSource;
 
 
         protected enum EnemyStates
@@ -70,6 +72,7 @@ namespace Metroknight {
             player = PlayerController.Instance;
             audioSource = GetComponent<AudioSource>();
             damageFlash = GetComponent<DamageFlash>();
+            impulseSource = GetComponent<CinemachineImpulseSource>();
         }
 
 
@@ -104,6 +107,7 @@ namespace Metroknight {
 
                 // Avoid NullReferenceException
                 if (damageFlash != null) damageFlash.CallDamageFlash();
+                if (impulseSource != null) CameraShakeManager.Instance.CameraShake(impulseSource);
 
                 GameObject _manaBlood = Instantiate(manaBlood, transform.position, Quaternion.identity);
                 Destroy(_manaBlood, 1f);
