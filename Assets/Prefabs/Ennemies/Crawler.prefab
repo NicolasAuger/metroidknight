@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 713283828889752278}
   - component: {fileID: 4158232232839698752}
   - component: {fileID: 2583114636285940114}
+  - component: {fileID: 7262519409620301684}
   m_Layer: 6
   m_Name: Crawler
   m_TagString: Enemy
@@ -57,7 +58,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: bd931d09f32bf456380391e0c84ee6df, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -303,6 +304,53 @@ AudioSource:
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &7262519409620301684
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3394434875293055264}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb6b4f14c09864cefb6a011475861d3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  flashColor: {r: 1, g: 1, b: 1, a: 1}
+  flashTime: 0.25
+  flashSpeedCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1.0013733
+      inSlope: -18.782434
+      outSlope: -18.782434
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.03680132
+    - serializedVersion: 3
+      time: 0.05869253
+      value: 0.17703745
+      inSlope: -0.46629047
+      outSlope: -0.46629047
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.25
+      value: 0
+      inSlope: -21.380896
+      outSlope: -21.380896
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.025769293
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4

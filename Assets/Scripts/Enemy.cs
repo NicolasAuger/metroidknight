@@ -17,7 +17,7 @@ namespace Metroknight {
         [SerializeField] protected GameObject manaBlood;
         [SerializeField] protected float destroyTime;
         [SerializeField] protected AudioClip hitSound;
-        
+        private DamageFlash damageFlash;
 
         protected float recoilTimer;
         protected Rigidbody2D rb;
@@ -69,6 +69,7 @@ namespace Metroknight {
             animator = GetComponent<Animator>();
             player = PlayerController.Instance;
             audioSource = GetComponent<AudioSource>();
+            damageFlash = GetComponent<DamageFlash>();
         }
 
 
@@ -100,6 +101,10 @@ namespace Metroknight {
 
             if (!isRecoiling && health > 0) {
                 audioSource.PlayOneShot(hitSound);
+
+                // Avoid NullReferenceException
+                if (damageFlash != null) damageFlash.CallDamageFlash();
+
                 GameObject _manaBlood = Instantiate(manaBlood, transform.position, Quaternion.identity);
                 Destroy(_manaBlood, 1f);
                 rb.velocity = _hitForce * recoilFactor * _hitDirection;
