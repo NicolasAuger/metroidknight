@@ -252,10 +252,10 @@ namespace Metroknight
 
             if (pState.dashing) return;
 
-            if (!isWallJumping)
-            {
-                Move();
-            }
+            // if (!isWallJumping)
+            // {
+            //     Move();
+            // }
             Heal();
             CastSpells();
 
@@ -264,7 +264,7 @@ namespace Metroknight
             {
                 if (!isWallJumping)
                 {
-                    Flip();
+                    // Flip();
                     Jump();
                 }
 
@@ -295,6 +295,11 @@ namespace Metroknight
             if (pState.cutscene) return;
             if (pState.dashing) return;
             Recoil();
+            if (!isWallJumping)
+            {
+                Flip();
+                Move();
+            }
         }
 
         void GetInputs()
