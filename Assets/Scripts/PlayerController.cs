@@ -127,9 +127,9 @@ namespace Metroknight
 
         [HideInInspector] public PlayerStateList pState;
         public Rigidbody2D rb;
-        private Animator animator;
+        public Animator animator;
         private float gravity;
-        private float xAxis, yAxis;
+        public float xAxis, yAxis;
         bool openMap;
         bool openInventory;
         private bool canDash = true;
@@ -899,7 +899,9 @@ namespace Metroknight
 
         public IEnumerator WalkIntoNewScene(Vector2 _exitDir, float _delay)
         {
+            if (!pState) yield return null;
             pState.invincible = true;
+            pState.cutscene = true;
 
             // If exit direction is upwards
             if (_exitDir.y > 0)

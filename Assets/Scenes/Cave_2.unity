@@ -4968,6 +4968,14 @@ PrefabInstance:
       propertyPath: m_ColliderPaths.Array.data[0].m_ColliderPaths.Array.data[0].Array.data[3].Y
       value: -21336898
       objectReference: {fileID: 0}
+    - target: {fileID: 7774378353980850263, guid: 0e0a99d15560b4fb9bbbef86ac5e7e97, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.0000071525574
+      objectReference: {fileID: 0}
+    - target: {fileID: 7774378353980850263, guid: 0e0a99d15560b4fb9bbbef86ac5e7e97, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.713089
+      objectReference: {fileID: 0}
     - target: {fileID: 8969998016423544243, guid: 0e0a99d15560b4fb9bbbef86ac5e7e97, type: 3}
       propertyPath: m_LocalPosition.x
       value: -6.1681385
@@ -6297,6 +6305,9 @@ MonoBehaviour:
   damage: 2
   manaBlood: {fileID: 0}
   destroyTime: 0
+  hitSound: {fileID: 0}
+  rb: {fileID: 0}
+  animator: {fileID: 0}
   flipWaitTime: 0
   ledgeCheckX: 0
   ledgeCheckY: 0

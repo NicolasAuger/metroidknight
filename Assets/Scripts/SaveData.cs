@@ -46,8 +46,9 @@ namespace Metroknight
     public void Initialize()
     {
       // Tests purpose
-      // DeleteFile("/save.player.data");
-      // DeleteFile("/save.discovered_maps.data");
+    //   DeleteFile("/save.player.data");
+    //   DeleteFile("/save.maps.data");
+    //   DeleteFile("/save.discovered_maps.data");
       EnsureFileExists("/save.bench.data");
       EnsureFileExists("/save.player.data");
       EnsureFileExists("/save.shade.data");
@@ -273,16 +274,16 @@ namespace Metroknight
 
     public void SaveDiscoveredMaps()
     {
-      EnsureFileExists("/save.discovered_maps.data");
-      using (BinaryWriter writer = new BinaryWriter(File.OpenWrite(Application.persistentDataPath + "/save.discovered_maps.data")))
-      {
-        discoveredScenesCount = discoveredSceneNames.Count;
-        writer.Write(discoveredScenesCount);
-        foreach (string sceneName in discoveredSceneNames)
+        EnsureFileExists("/save.discovered_maps.data");
+        using (BinaryWriter writer = new BinaryWriter(File.OpenWrite(Application.persistentDataPath + "/save.discovered_maps.data")))
         {
-          writer.Write(sceneName);
+            discoveredScenesCount = discoveredSceneNames.Count;
+            writer.Write(discoveredScenesCount);
+            foreach (string sceneName in discoveredSceneNames)
+            {
+                writer.Write(sceneName);
+            }
         }
-      }
     }
 
     public void LoadMaps()

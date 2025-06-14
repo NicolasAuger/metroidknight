@@ -13,17 +13,17 @@ namespace Metroknight {
         [Space(5)]
 
         [SerializeField] protected PlayerController player;
-        [SerializeField] protected float speed;
-        [SerializeField] protected float damage;
+        [SerializeField] public float speed;
+        [SerializeField] public float damage;
         [SerializeField] protected GameObject manaBlood;
         [SerializeField] protected float destroyTime;
         [SerializeField] protected AudioClip hitSound;
         private DamageFlash damageFlash;
 
         protected float recoilTimer;
-        protected Rigidbody2D rb;
+        public Rigidbody2D rb;
         protected SpriteRenderer sr;
-        protected Animator animator;
+        public Animator animator;
         protected AudioSource audioSource;
         protected CinemachineImpulseSource impulseSource;
 
@@ -49,8 +49,13 @@ namespace Metroknight {
             Shade_Idle,
             Shade_Chase,
             Shade_Stunned,
-            Shade_Death
+            Shade_Death,
 
+            // THK
+            THK_Stage1,
+            THK_Stage2,
+            THK_Stage3,
+            THK_Stage4,
         };
 
         protected EnemyStates currentEnemyState;
@@ -102,7 +107,8 @@ namespace Metroknight {
         public virtual void EnemyHit(float _damageDone, Vector2 _hitDirection, float _hitForce) {
             health -= _damageDone;
 
-            if (!isRecoiling && health > 0) {
+            if (!isRecoiling && health > 0)
+            {
                 audioSource.PlayOneShot(hitSound);
 
                 // Avoid NullReferenceException
