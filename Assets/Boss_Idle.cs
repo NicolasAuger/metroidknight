@@ -24,6 +24,11 @@ namespace Metroknight
                 TheHollowKnight.Instance.AttackHandler();
                 TheHollowKnight.Instance.attackCountdown = Random.Range(TheHollowKnight.Instance.attackTimer - 1, TheHollowKnight.Instance.attackTimer + 1); ;
             }
+
+            if (!TheHollowKnight.Instance.Grounded())
+            {
+                rb.velocity = new Vector2(rb.velocity.x, -25f); // if not grounded, fall down
+            }
         }
 
         void RunToPlayer(Animator animator)

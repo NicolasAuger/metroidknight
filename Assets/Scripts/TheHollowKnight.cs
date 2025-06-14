@@ -16,6 +16,7 @@ namespace Metroknight
 
         [Header("Ground Check Settings")]
         [SerializeField] public Transform groundCheckPoint;
+        [SerializeField] public Transform wallCheckPoint;
         [SerializeField] private float groundCheckY = 0.2f;
         [SerializeField] private float groundCheckX = 0.5f;
         [SerializeField] private LayerMask groundLayer;
@@ -92,6 +93,12 @@ namespace Metroknight
             }
         }
 
+        protected void FixedUpdate()
+        {
+            if (attacking) return;
+            Flip();
+        }
+
         public void Flip()
         {
             if (PlayerController.Instance.transform.position.x < transform.position.x && transform.localScale.x > 0)
@@ -120,6 +127,20 @@ namespace Metroknight
             }
         }
 
+        public bool TouchedWall()
+        {
+            if (Physics2D.Raycast(wallCheckPoint.position, Vector2.down, groundCheckY, groundLayer) ||
+                Physics2D.Raycast(wallCheckPoint.position + new Vector3(groundCheckX, 0, 0), Vector2.down, groundCheckX, groundLayer) ||
+                Physics2D.Raycast(wallCheckPoint.position + new Vector3(-groundCheckX, 0, 0), Vector2.down, groundCheckX, groundLayer))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         protected override void UpdateEnemyStates()
         {
             if (PlayerController.Instance != null)
@@ -128,23 +149,23 @@ namespace Metroknight
                 {
                     case EnemyStates.THK_Stage1:
                         canStun = true;
-                        attackTimer = 4f;
+                        attackTimer = 3f;
                         runSpeed = speed;
                         break;
 
                     case EnemyStates.THK_Stage2:
                         canStun = true;
-                        attackTimer = 3f;
+                        attackTimer = 2f;
                         break;
 
                     case EnemyStates.THK_Stage3:
                         canStun = false;
-                        attackTimer = 6f;
+                        attackTimer = 3f;
                         break;
 
                     case EnemyStates.THK_Stage4:
                         canStun = false;
-                        attackTimer = 7f;
+                        attackTimer = 3.5f;
                         runSpeed = speed * .5f; // Slow down the boss in stage 4
                         break;
                 }
@@ -296,7 +317,6 @@ namespace Metroknight
 
         IEnumerator Lunge()
         {
-            Flip();
             attacking = true;
             animator.SetBool("Lunge", true);
             yield return new WaitForSeconds(1f);
@@ -505,6 +525,7 @@ namespace Metroknight
                 else
                 {
                     StopCoroutine(Parry());
+                    parrying = false;
                     ResetAllAttacks();
                     StartCoroutine(Slash()); // Riposte
                 }
@@ -516,26 +537,33 @@ namespace Metroknight
                 stunned = false;
             }
 
+            Debug.Log("THK Hit: " + health);
+
             #region Health to state
-            if (health > 20)
+            if (health > 75)
             {
                 ChangeState(EnemyStates.THK_Stage1);
+                Debug.Log("THK Stage 1");
             }
-            else if (health <= 20 && health > 15)
+            else if (health <= 75 && health > 50)
             {
                 ChangeState(EnemyStates.THK_Stage2);
+                Debug.Log("THK Stage 2");
             }
-            else if (health <= 15 && health > 10)
+            else if (health <= 50 && health > 25)
             {
                 ChangeState(EnemyStates.THK_Stage3);
+                Debug.Log("THK Stage 3");
             }
-            else if (health <= 10 && health > 0)
+            else if (health <= 25 && health > 0)
             {
                 ChangeState(EnemyStates.THK_Stage4);
+                Debug.Log("THK Stage 4");
             }
-            else if (health <= 0)
+            else if (health <= 0 && alive)
             {
                 Death(0f);
+                Debug.Log("THK Dead");
             }
             #endregion
         }

@@ -32,6 +32,16 @@ namespace Metroknight
                 );
                 rb.MovePosition(_newPos);
 
+                if (TheHollowKnight.Instance.TouchedWall())
+                {
+                    TheHollowKnight.Instance.moveToPosition.x = rb.velocity.x;
+                    _newPos = Vector2.MoveTowards(
+                        rb.position,
+                        TheHollowKnight.Instance.moveToPosition,
+                        TheHollowKnight.Instance.speed * 3 * Time.fixedDeltaTime
+                    );
+                }
+
                 float _distance = Vector2.Distance(rb.position, _newPos);
                 if (_distance <= 0.1f)
                 {

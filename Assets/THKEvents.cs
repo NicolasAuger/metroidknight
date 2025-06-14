@@ -29,9 +29,14 @@ namespace Metroknight
             Collider2D[] _objectsToHit = Physics2D.OverlapBoxAll(_attackTransform.position, _attackArea, 0f);
             for (int i = 0; i < _objectsToHit.Length; i++)
             {
-                if (_objectsToHit[i].GetComponent<PlayerController>() != null)
+                if (_objectsToHit[i].GetComponent<PlayerController>() != null && !PlayerController.Instance.pState.invincible)
                 {
                     PlayerController.Instance.TakeDamage(TheHollowKnight.Instance.damage);
+
+                    if (PlayerController.Instance.pState.alive)
+                    {
+                        PlayerController.Instance.HitStopTime(0, 5, .5f);
+                    }
                 }
             }
         }
@@ -87,6 +92,9 @@ namespace Metroknight
         void DestroyAfterDeath()
         {
             TheHollowKnight.Instance.DestroyAfterDeath();
+            GameManager.Instance.THKDefeated = true;
+            SaveData.Instance.SaveBosses();
+            SaveData.Instance.SavePlayer();
         }
     }
 }

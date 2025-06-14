@@ -22,9 +22,13 @@ namespace Metroknight
             rb.velocity = new Vector2(_dir * (TheHollowKnight.Instance.speed * 5), 0f);
 
             if (Vector2.Distance(PlayerController.Instance.transform.position, rb.position) <= TheHollowKnight.Instance.attackRange &&
-                !TheHollowKnight.Instance.damagedPlayer)
+                !TheHollowKnight.Instance.damagedPlayer && !PlayerController.Instance.pState.invincible)
             {
                 PlayerController.Instance.TakeDamage(TheHollowKnight.Instance.damage);
+                if (PlayerController.Instance.pState.alive)
+                {
+                    PlayerController.Instance.HitStopTime(0, 5, .5f);
+                }
                 TheHollowKnight.Instance.damagedPlayer = true; // Prevent multiple hits in one lunge
             }
         }

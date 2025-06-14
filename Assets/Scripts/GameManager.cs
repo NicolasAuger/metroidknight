@@ -21,6 +21,7 @@ namespace Metroknight
 
         private AudioSource audioSource;
         [SerializeField] private AudioClip zoneSound;
+        public bool THKDefeated;
 
         private void Awake()
         {
@@ -82,6 +83,7 @@ namespace Metroknight
             platformingRespawnPoint = defaultRespawnPoint.transform.position;
 
             SaveScene();
+            SaveData.Instance.LoadBosses();
             if (PlayerController.Instance != null)
             {
                 if (PlayerController.Instance.halfMana)

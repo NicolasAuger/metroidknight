@@ -2184,8 +2184,8 @@ MonoBehaviour:
   m_ShadowVolumeIntensityEnabled: 0
   m_ShadowVolumeIntensity: 0.75
   m_LocalBounds:
-    m_Center: {x: 10.64905, y: -1.9652001, z: 0}
-    m_Extent: {x: 13.28985, y: 4.4700003, z: 0}
+    m_Center: {x: 10.65745, y: -1.965, z: 0}
+    m_Extent: {x: 13.28875, y: 4.4691, z: 0}
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
   m_PointLightInnerRadius: 0
@@ -12112,8 +12112,8 @@ MonoBehaviour:
   m_ShadowVolumeIntensityEnabled: 0
   m_ShadowVolumeIntensity: 0.75
   m_LocalBounds:
-    m_Center: {x: 13.968559, y: 5.1148, z: 0}
-    m_Extent: {x: 33.89296, y: 5.1526, z: 0}
+    m_Center: {x: 13.9726095, y: 5.117, z: 0}
+    m_Extent: {x: 33.88891, y: 5.1557, z: 0}
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
   m_PointLightInnerRadius: 0
@@ -12421,6 +12421,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 490092165788068010, guid: aed9ffed7beac49fa92e7e67c0d60882, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 3241902665940612327, guid: aed9ffed7beac49fa92e7e67c0d60882, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -2.6
+      objectReference: {fileID: 0}
     - target: {fileID: 5107848341961079222, guid: aed9ffed7beac49fa92e7e67c0d60882, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.09
@@ -12465,6 +12473,34 @@ PrefabInstance:
       propertyPath: manaStorage
       value: 
       objectReference: {fileID: 1608347900}
+    - target: {fileID: 5425776342075892120, guid: aed9ffed7beac49fa92e7e67c0d60882, type: 3}
+      propertyPath: upAttackArea.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5425776342075892120, guid: aed9ffed7beac49fa92e7e67c0d60882, type: 3}
+      propertyPath: upAttackArea.y
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5425776342075892120, guid: aed9ffed7beac49fa92e7e67c0d60882, type: 3}
+      propertyPath: downAttackArea.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5425776342075892120, guid: aed9ffed7beac49fa92e7e67c0d60882, type: 3}
+      propertyPath: downAttackArea.y
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5425776342075892120, guid: aed9ffed7beac49fa92e7e67c0d60882, type: 3}
+      propertyPath: sideAttackArea.x
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6934845081498192590, guid: aed9ffed7beac49fa92e7e67c0d60882, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6934845081498192590, guid: aed9ffed7beac49fa92e7e67c0d60882, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 2.12
+      objectReference: {fileID: 0}
     - target: {fileID: 9059257841007337660, guid: aed9ffed7beac49fa92e7e67c0d60882, type: 3}
       propertyPath: m_Name
       value: Player

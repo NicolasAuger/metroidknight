@@ -19,6 +19,18 @@ namespace Metroknight
 
         private void Awake()
         {
+            if (TheHollowKnight.Instance != null)
+            {
+                Destroy(TheHollowKnight.Instance);
+                callOnce = false;
+                col.isTrigger = true;
+            }
+
+            if (GameManager.Instance.THKDefeated)
+            {
+                callOnce = true;
+            }
+
             if (Instance != null && Instance != this)
             {
                 Destroy(gameObject);
@@ -51,7 +63,7 @@ namespace Metroknight
 
         private void OnTriggerEnter2D(Collider2D _other)
         {
-            if (_other.CompareTag("Player") && !callOnce)
+            if (_other.CompareTag("Player") && !callOnce && !GameManager.Instance.THKDefeated)
             {
                 StartCoroutine(WalkIntoRoom());
                 callOnce = true;
