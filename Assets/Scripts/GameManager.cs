@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -21,6 +22,8 @@ namespace Metroknight
 
         private AudioSource audioSource;
         [SerializeField] private AudioClip zoneSound;
+        [SerializeField] private AudioClip bossSound;
+        [SerializeField] private AudioClip bossDeadSound;
         public bool THKDefeated;
 
         private void Awake()
@@ -43,7 +46,9 @@ namespace Metroknight
         {
             audioSource = GetComponent<AudioSource>();
             audioSource.loop = true;
+
             audioSource.clip = zoneSound;
+            // audioSource.clip = SceneManager.GetActiveScene().name == "Cave_3" ? bossSound : zoneSound;
             audioSource.volume = .4f;
             audioSource.Play();
         }
@@ -62,6 +67,29 @@ namespace Metroknight
                 gameIsPaused = true;
                 audioSource.volume = .2f; // Lower volume when paused
             }
+        }
+
+        public void EnteringBossFight()
+        {
+            if (audioSource.clip != bossSound)
+            {
+                audioSource.clip = bossSound;
+                audioSource.Play();
+            }
+        }
+
+        public void BossKilled()
+        {
+            StartCoroutine(ManageBossDeathSounds());
+        }
+
+        IEnumerator ManageBossDeathSounds()
+        {
+            audioSource.clip = bossDeadSound;
+            audioSource.Play();
+            yield return new WaitForSeconds(audioSource.clip.length);
+            audioSource.clip = zoneSound;
+            audioSource.Play();
         }
 
         public void UnPauseGame()

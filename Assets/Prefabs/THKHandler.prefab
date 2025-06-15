@@ -233,7 +233,7 @@ MonoBehaviour:
   damage: 1
   manaBlood: {fileID: 7370990271232570953, guid: 486669f319cae48018f5416586d5873e, type: 3}
   destroyTime: 2
-  hitSound: {fileID: 8300000, guid: edafb4d2ecfde41ad897f101433e444d, type: 3}
+  hitSound: {fileID: 8300000, guid: e92a2f3fe24364b84860e994d65af5f9, type: 3}
   rb: {fileID: 0}
   animator: {fileID: 0}
   slashEffect: {fileID: 4390498643010443790, guid: 3b0b3ceca73744ed79eba778eebc44d4, type: 3}
@@ -269,6 +269,7 @@ MonoBehaviour:
   rotationDirectionToTarget: 0
   bounceCount: 0
   groundShakeSmoke: {fileID: 2249660009719875167, guid: da4033fea00d94ba095a56bb734f98c8, type: 3}
+  divingPillarSound: {fileID: 8300000, guid: ad58424ae1d12474e8f98c0b1056f8f0, type: 3}
 --- !u!114 &8450324630970252491
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -610,6 +611,7 @@ GameObject:
   - component: {fileID: 3731398471843902115}
   - component: {fileID: 1077124587909877532}
   - component: {fileID: 5936931518337103976}
+  - component: {fileID: 1632303131759042083}
   m_Layer: 0
   m_Name: Hollow Knight
   m_TagString: Untagged
@@ -674,7 +676,7 @@ SpriteRenderer:
   m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 84ce2f114ad12bd4ebafc77060220324, type: 3}
-  m_Color: {r: 0.4716981, g: 0.4716981, b: 0.4716981, a: 1}
+  m_Color: {r: 0.8490566, g: 0.5807227, b: 0.5807227, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -717,6 +719,53 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5442f0d278e94828b7fa63c4e7709dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1632303131759042083
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7638148191087437116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb6b4f14c09864cefb6a011475861d3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  flashColor: {r: 1, g: 1, b: 1, a: 1}
+  flashTime: 0.25
+  flashSpeedCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1.0013733
+      inSlope: -18.782434
+      outSlope: -18.782434
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.03680132
+    - serializedVersion: 3
+      time: 0.05869253
+      value: 0.17703745
+      inSlope: -0.46629047
+      outSlope: -0.46629047
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.25
+      value: 0
+      inSlope: -21.380896
+      outSlope: -21.380896
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.025769293
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &7940957294118580249
 GameObject:
   m_ObjectHideFlags: 0
@@ -764,9 +813,9 @@ MonoBehaviour:
   m_ComponentVersion: 1
   m_LightType: 3
   m_BlendStyleIndex: 0
-  m_FalloffIntensity: 0.595
+  m_FalloffIntensity: 0.279
   m_Color: {r: 1, g: 0.45580503, b: 0.3820755, a: 1}
-  m_Intensity: 3
+  m_Intensity: 2.5
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
   m_ApplyToSortingLayers: 1966b786
@@ -788,7 +837,7 @@ MonoBehaviour:
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
   m_PointLightInnerRadius: 1
-  m_PointLightOuterRadius: 4
+  m_PointLightOuterRadius: 6
   m_ShapeLightParametricSides: 5
   m_ShapeLightParametricAngleOffset: 0
   m_ShapeLightParametricRadius: 1

@@ -48,6 +48,8 @@ namespace Metroknight
         [HideInInspector] public GameObject groundShakeSmoke;
         int bounces = 0;
 
+        [SerializeField] private AudioClip divingPillarSound;
+
 
         public static TheHollowKnight Instance;
 
@@ -67,9 +69,12 @@ namespace Metroknight
         {
             base.Start();
             sr = GetComponentInChildren<SpriteRenderer>();
+            damageFlash = GetComponentInChildren<DamageFlash>();
             animator = GetComponentInChildren<Animator>();
+            audioSource = GetComponent<AudioSource>();
             ChangeState(EnemyStates.THK_Stage1);
             alive = true;
+            Flip();
         }
 
         protected override void Update()
@@ -91,12 +96,6 @@ namespace Metroknight
             {
                 rb.velocity = Vector2.zero;
             }
-        }
-
-        protected void FixedUpdate()
-        {
-            if (attacking) return;
-            Flip();
         }
 
         public void Flip()
@@ -185,6 +184,7 @@ namespace Metroknight
             {
                 if (Vector2.Distance(PlayerController.Instance.transform.position, transform.position) < attackRange)
                 {
+                    Debug.Log("THK Stage 1 Triple Slash");
                     StartCoroutine(TripleSlash());
                 }
                 else
@@ -201,6 +201,7 @@ namespace Metroknight
             {
                 if (Vector2.Distance(PlayerController.Instance.transform.position, transform.position) < attackRange)
                 {
+                    Debug.Log("THK Stage 2 Triple Slash");
                     StartCoroutine(TripleSlash());
                 }
                 else
@@ -212,10 +213,12 @@ namespace Metroknight
                     }
                     else if (_attackChosen == 2)
                     {
+                        Debug.Log("THK Stage 2 Dive Attack Jump");
                         DiveAttackJump();
                     }
                     else if (_attackChosen == 3)
                     {
+                        Debug.Log("THK Stage 2 Barrage Bend Down");
                         BarrageBendDown();
                     }
                 }
@@ -225,32 +228,34 @@ namespace Metroknight
                 int _attackChosen = Random.Range(1, 4);
                 if (_attackChosen == 1)
                 {
+                    Debug.Log("THK Stage 3 Outbreak Bend Down");
                     OutbreakBendDown();
                 }
                 else if (_attackChosen == 2)
                 {
+                    Debug.Log("THK Stage 3 Dive Attack Jump");
                     DiveAttackJump();
                 }
                 else if (_attackChosen == 3)
                 {
+                    Debug.Log("THK Stage 3 Barrage Bend Down");
                     BarrageBendDown();
-                } else if (_attackChosen == 4)
+                }
+                else if (_attackChosen == 4)
                 {
+                    Debug.Log("THK Stage 3 Bounce Attack");
                     BounceAttack();
                 }
             }
             else if (currentEnemyState == EnemyStates.THK_Stage4)
             {
-                if (currentEnemyState == EnemyStates.THK_Stage1)
+                if (Vector2.Distance(PlayerController.Instance.transform.position, transform.position) < attackRange)
                 {
-                    if (Vector2.Distance(PlayerController.Instance.transform.position, transform.position) < attackRange)
-                    {
-                        StartCoroutine(Slash());
-                    }
-                    else
-                    {
-                        BounceAttack();
-                    }
+                    StartCoroutine(Slash());
+                }
+                else
+                {
+                    BounceAttack();
                 }
             }
         }
@@ -266,6 +271,17 @@ namespace Metroknight
             barrageAttack = false;
             outbreakAttack = false;
             bounceAttack = false;
+
+            // Try fixing jump looping animation when hit while stunned
+            animator.SetBool("Jump", false);
+            animator.SetBool("Cast", false);
+            animator.SetBool("BendDown", false);
+            animator.SetBool("Dive", false);
+            animator.SetBool("Lunge", false);
+            animator.ResetTrigger("Slash");
+            animator.ResetTrigger("BendDown");
+            animator.ResetTrigger("Bounce1");
+            animator.ResetTrigger("Bounce2");
         }
 
         IEnumerator TripleSlash()
@@ -388,6 +404,7 @@ namespace Metroknight
 
                 _spawnDistance += 5f; // Increase distance for each pillar
             }
+            audioSource.PlayOneShot(divingPillarSound, .7f);
             ResetAllAttacks();
         }
 
@@ -445,10 +462,9 @@ namespace Metroknight
 
             for (int i = 0; i < 30; i++)
             {
-                Instantiate(barageFireball, transform.position, Quaternion.Euler(0, 0, Random.Range(110, 130))); // Downward random angle
-                Instantiate(barageFireball, transform.position, Quaternion.Euler(0, 0, Random.Range(50, 70))); // Diagonal right angle
-                Instantiate(barageFireball, transform.position, Quaternion.Euler(0, 0, Random.Range(260, 280))); // Diagonal left angle
-
+                Instantiate(barageFireball, transform.position, Quaternion.Euler(0, 0, Random.Range(100, 160))); // Downward random angle
+                Instantiate(barageFireball, transform.position, Quaternion.Euler(0, 0, Random.Range(20, 80))); // Diagonal right angle
+                Instantiate(barageFireball, transform.position, Quaternion.Euler(0, 0, Random.Range(240, 300))); // Diagonal left angle
                 yield return new WaitForSeconds(0.2f); // Delay between each projectile
             }
             yield return new WaitForSeconds(0.1f); // Wait for the barrage to finish
@@ -509,16 +525,17 @@ namespace Metroknight
                     if (canStun)
                     {
                         hitCounter++;
-                        if (hitCounter >= 3)
+                        if (hitCounter >= 8)
                         {
                             ResetAllAttacks();
                             StartCoroutine(Stunned());
                         }
                     }
                     base.EnemyHit(_damageDone, _hitDirection, _hitForce);
+                    if (damageFlash != null) damageFlash.CallDamageFlash();
                     if (currentEnemyState != EnemyStates.THK_Stage4)
                     {
-                        ResetAllAttacks(); // cancel any current attack to avoid bugs
+                        // ResetAllAttacks(); // cancel any current attack to avoid bugs
                         StartCoroutine(Parry());
                     }
                 }
@@ -526,7 +543,8 @@ namespace Metroknight
                 {
                     StopCoroutine(Parry());
                     parrying = false;
-                    ResetAllAttacks();
+                    // ResetAllAttacks();
+                    PlayerController.Instance.audioSource.PlayOneShot(PlayerController.Instance.parrySound);
                     StartCoroutine(Slash()); // Riposte
                 }
             }
@@ -589,6 +607,7 @@ namespace Metroknight
         public void DestroyAfterDeath()
         {
             Destroy(gameObject);
+            GameManager.Instance.BossKilled();
             SpawnBoss.Instance.isBossDead = true;
         }
 

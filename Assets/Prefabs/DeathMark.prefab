@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 6517938370833974254}
   - component: {fileID: 3189676261278263099}
   - component: {fileID: -4323389862782448116}
+  - component: {fileID: -8438844705591319227}
   m_Layer: 6
   m_Name: DeathMark
   m_TagString: Enemy
@@ -61,7 +62,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: bd931d09f32bf456380391e0c84ee6df, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -236,7 +237,9 @@ MonoBehaviour:
   damage: 1
   manaBlood: {fileID: 7370990271232570953, guid: 486669f319cae48018f5416586d5873e, type: 3}
   destroyTime: 0
-  hitSound: {fileID: 8300000, guid: edafb4d2ecfde41ad897f101433e444d, type: 3}
+  hitSound: {fileID: 8300000, guid: e92a2f3fe24364b84860e994d65af5f9, type: 3}
+  rb: {fileID: 0}
+  animator: {fileID: 0}
   chaseDistance: 10
   stunDuration: 0
 --- !u!95 &6517938370833974254
@@ -463,6 +466,53 @@ MonoBehaviour:
     m_DissipationDistance: 100
     m_PropagationSpeed: 343
   m_DefaultVelocity: {x: -0.05, y: -0.05, z: 0.05}
+--- !u!114 &-8438844705591319227
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1908033970094368997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb6b4f14c09864cefb6a011475861d3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  flashColor: {r: 1, g: 1, b: 1, a: 1}
+  flashTime: 0.25
+  flashSpeedCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1.0013733
+      inSlope: -18.782434
+      outSlope: -18.782434
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.03680132
+    - serializedVersion: 3
+      time: 0.05869253
+      value: 0.17703745
+      inSlope: -0.46629047
+      outSlope: -0.46629047
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.25
+      value: 0
+      inSlope: -21.380896
+      outSlope: -21.380896
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.025769293
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &4683859079659297957
 GameObject:
   m_ObjectHideFlags: 0

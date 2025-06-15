@@ -113,6 +113,9 @@ namespace Metroknight
 
         [Header("Audio Settings")]
         [SerializeField] private AudioClip jumpSound;
+        [SerializeField] private AudioClip multipleJumpSound;
+        [SerializeField] private AudioClip wallJumpSound;
+        [SerializeField] private AudioClip wallSlideSound;
         [SerializeField] private AudioClip dashSound;
         [SerializeField] private AudioClip attackSound;
         [SerializeField] private AudioClip healSound;
@@ -121,7 +124,9 @@ namespace Metroknight
         [SerializeField] private AudioClip fallSound;
         [SerializeField] private AudioClip deadSound;
         [SerializeField] private AudioClip gameOverSound;
+        [SerializeField] public AudioClip parrySound;
         private bool landingSoundPlayed;
+        private bool slideSoundPlayed;
         private bool healingSoundPlayed;
         [Space(5)]
 
@@ -135,7 +140,7 @@ namespace Metroknight
         private bool canDash = true;
         private bool dashed;
         private SpriteRenderer sr;
-        private AudioSource audioSource;
+        public AudioSource audioSource;
         public AudioSource runningAudioSource;
 
         public int Health
@@ -377,7 +382,7 @@ namespace Metroknight
                 // Check for the jump button being pressed to play the sound only once, since called from Update() method 
                 if (Input.GetButtonDown("Jump"))
                 {
-                    audioSource.PlayOneShot(jumpSound, .75f);
+                    audioSource.PlayOneShot(jumpSound);
                 }
                 rb.velocity = new Vector3(rb.velocity.x, jumpForce);
                 pState.jumping = true;
@@ -386,7 +391,7 @@ namespace Metroknight
             // Multiple jumps
             if (!Grounded() && airJumpCounter < maxAirJumps && Input.GetButtonDown("Jump") && unlockedMultipleJumps)
             {
-                audioSource.PlayOneShot(jumpSound, .75f);
+                audioSource.PlayOneShot(multipleJumpSound);
                 pState.jumping = true;
                 airJumpCounter++;
                 rb.velocity = new Vector3(rb.velocity.x, jumpForce);
@@ -412,7 +417,7 @@ namespace Metroknight
                 if (!landingSoundPlayed)
                 {
                     // Try to lower horrible fall sound
-                    audioSource.PlayOneShot(fallSound, .2f);
+                    audioSource.PlayOneShot(fallSound);
                     landingSoundPlayed = true;
                 }
                 pState.jumping = false;
@@ -466,11 +471,14 @@ namespace Metroknight
             if (!Grounded() && Walled() && xAxis != 0)
             {
                 isWallSliding = true;
+                if (!slideSoundPlayed) audioSource.PlayOneShot(wallSlideSound);
+                slideSoundPlayed = true;
                 rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, -wallSlidingSpeed, float.MaxValue));
             }
             else
             {
                 isWallSliding = false;
+                slideSoundPlayed = false;
             }
         }
 
@@ -486,6 +494,7 @@ namespace Metroknight
             if (Input.GetButtonDown("Jump") && isWallSliding)
             {
                 isWallJumping = true;
+                audioSource.PlayOneShot(wallJumpSound);
                 rb.velocity = new Vector2(wallJumpingDirection * wallJumpingPower.x, wallJumpingPower.y);
                 dashed = false;
                 airJumpCounter = 0;
@@ -561,7 +570,6 @@ namespace Metroknight
                     int _recoilLeftOrRight = pState.lookingRight ? 1 : -1;
                     Hit(sideAttackTransform, sideAttackArea, ref pState.recoilingX, Vector2.right * _recoilLeftOrRight, recoilXSpeed);
                     Instantiate(slashEffect, sideAttackTransform);
-                    // slashEffect.transform.localScale = new Vector2(transform.localScale.x, transform.localScale.y);
                 }
                 else if (yAxis > 0)
                 {
@@ -583,6 +591,8 @@ namespace Metroknight
 
             // Save the enemies that have been hit
             List<Enemy> hitEnemies = new List<Enemy>();
+
+            bool _hitSpikes = false;
 
             if (objectsToHit.Length > 0)
             {
@@ -611,6 +621,14 @@ namespace Metroknight
                         }
                     }
                 }
+
+                Spikes _spikes = objectsToHit[i].GetComponent<Spikes>();
+                if (_spikes) _hitSpikes = true;
+            }
+
+            if (_hitSpikes)
+            {
+                audioSource.PlayOneShot(parrySound);
             }
         }
 
@@ -813,7 +831,7 @@ namespace Metroknight
             {
                 pState.healing = false;
                 healingSoundPlayed = false;
-                // audioSource.Stop();
+
                 healTimer = 0;
                 animator.SetBool("Healing", false);
             }

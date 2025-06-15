@@ -56,7 +56,7 @@ Transform:
   m_GameObject: {fileID: 1447746118252159474}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.25, z: 0}
+  m_LocalPosition: {x: 0, y: 2.12, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -229,7 +229,7 @@ Transform:
   m_GameObject: {fileID: 5311631022083034320}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.54, y: -0.48, z: 0}
+  m_LocalPosition: {x: 2.35, y: -0.48, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -260,7 +260,7 @@ Transform:
   m_GameObject: {fileID: 6360179220343873222}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.03, y: -2.31, z: 0}
+  m_LocalPosition: {x: 0.03, y: -2.6, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -479,9 +479,9 @@ MonoBehaviour:
   sideAttackTransform: {fileID: 490092165788068010}
   upAttackTransform: {fileID: 6934845081498192590}
   downAttackTransform: {fileID: 3241902665940612327}
-  sideAttackArea: {x: 2, y: 2}
-  upAttackArea: {x: 1.83, y: 1.96}
-  downAttackArea: {x: 1.83, y: 1.96}
+  sideAttackArea: {x: 4, y: 2}
+  upAttackArea: {x: 2, y: 4}
+  downAttackArea: {x: 2, y: 4}
   slashEffect: {fileID: 4390498643010443790, guid: 3b0b3ceca73744ed79eba778eebc44d4, type: 3}
   timeBetweenAttack: 0.4
   recoilXSteps: 5
@@ -511,17 +511,25 @@ MonoBehaviour:
   upSpellExplosion: {fileID: 1900944211245768753, guid: 5a496d4ba4997437b87da227fd46237f, type: 3}
   downSpellFireball: {fileID: 1758334452910308090}
   playerFallSpeedThreshold: -10
-  jumpSound: {fileID: 8300000, guid: 8de0d420ed59f4545ad07adde259aa3e, type: 3}
-  dashSound: {fileID: 8300000, guid: daa054aaab63a490bb24f7954c7edce9, type: 3}
+  jumpSound: {fileID: 8300000, guid: cf1539b84e2bf4e5696a9147a2474f81, type: 3}
+  multipleJumpSound: {fileID: 8300000, guid: 46af044966a8a4c2d806ffee4a5ba86b, type: 3}
+  wallJumpSound: {fileID: 8300000, guid: 285464dc0e3ad45d78e040e201520bb1, type: 3}
+  wallSlideSound: {fileID: 8300000, guid: 9b11fd960697e47599dc0eb8f702d039, type: 3}
+  dashSound: {fileID: 8300000, guid: 866471ed453ad4f0f894ccef48dd07a6, type: 3}
   attackSound: {fileID: 8300000, guid: fc21f59c609fe408ba0d0f2e512f056e, type: 3}
   healSound: {fileID: 8300000, guid: 07d8620fa252c40c3bd517c309208d08, type: 3}
-  castSound: {fileID: 8300000, guid: 62886ae8445bc40579e0c80623fc10fe, type: 3}
-  hurtSound: {fileID: 8300000, guid: 3a71749ce1b65464db5cb5bb66918875, type: 3}
-  fallSound: {fileID: 8300000, guid: b8043cfd5061f47678cfeee1a8b31179, type: 3}
+  castSound: {fileID: 8300000, guid: e72dd8c9c12504eb5a74d4e7b8dca367, type: 3}
+  hurtSound: {fileID: 8300000, guid: ee0e257b939cb48fd8fc737b6c85f4b8, type: 3}
+  fallSound: {fileID: 8300000, guid: 45a6d65e34706476aa4507543edae52c, type: 3}
   deadSound: {fileID: 8300000, guid: 693eeb0aa0e6e44f09b9c2091b13f57c, type: 3}
   gameOverSound: {fileID: 8300000, guid: b5a33afcc159b45daac5bb74a3c86ac9, type: 3}
+  parrySound: {fileID: 8300000, guid: ef7d6e3d0cc984757b52269cab7afc95, type: 3}
   pState: {fileID: 0}
   rb: {fileID: 0}
+  animator: {fileID: 0}
+  xAxis: 0
+  yAxis: 0
+  audioSource: {fileID: 0}
   runningAudioSource: {fileID: 3767622046334229163}
   unlockedWallJump: 0
   unlockedDash: 0
@@ -737,7 +745,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 24300002, guid: 4a1f58b6cc7a44f8eb79c3fd435b0124, type: 2}
-  m_audioClip: {fileID: 8300000, guid: 7104faf5e6a2b4be393125284e1ef37d, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 4abb0bd1adbeb436f91a201e4949709f, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1

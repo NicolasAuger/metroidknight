@@ -18,7 +18,7 @@ namespace Metroknight {
         [SerializeField] protected GameObject manaBlood;
         [SerializeField] protected float destroyTime;
         [SerializeField] protected AudioClip hitSound;
-        private DamageFlash damageFlash;
+        protected DamageFlash damageFlash;
 
         protected float recoilTimer;
         public Rigidbody2D rb;

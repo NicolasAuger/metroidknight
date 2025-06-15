@@ -184,7 +184,9 @@ MonoBehaviour:
   damage: 1
   manaBlood: {fileID: 7370990271232570953, guid: 486669f319cae48018f5416586d5873e, type: 3}
   destroyTime: 0
-  hitSound: {fileID: 8300000, guid: edafb4d2ecfde41ad897f101433e444d, type: 3}
+  hitSound: {fileID: 8300000, guid: e92a2f3fe24364b84860e994d65af5f9, type: 3}
+  rb: {fileID: 0}
+  animator: {fileID: 0}
   ledgeCheckX: 1.2
   ledgeCheckY: 1
   chargeSpeedMultiplier: 3

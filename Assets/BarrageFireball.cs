@@ -39,6 +39,7 @@ namespace Metroknight
 
         private void OnTriggerEnter2D(Collider2D _other)
         {
+            Debug.Log(_other.gameObject.layer);
             if (_other.CompareTag("Player") && !PlayerController.Instance.pState.invincible)
             {
                 _other.GetComponent<PlayerController>().TakeDamage(TheHollowKnight.Instance.damage);
@@ -48,7 +49,7 @@ namespace Metroknight
                 }
                 Destroy(gameObject);
             }
-            else if (_other.CompareTag("Ground"))
+            else if (_other.gameObject.layer == LayerMask.NameToLayer("Ground"))
             {
                 Destroy(gameObject);
             }

@@ -5304,7 +5304,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unlockParticles: {fileID: 5693276688208527861, guid: 6879d3adb08504c42b241bbd5a72030b, type: 3}
   canvasUI: {fileID: 6559464745035995309}
-  unlockSound: {fileID: 8300000, guid: 20c0dc760b13a4e52911794d07f63b10, type: 3}
+  unlockSound: {fileID: 8300000, guid: 526d06720f3dd47449ba021915366b4c, type: 3}
 --- !u!82 &3715290872702404414
 AudioSource:
   m_ObjectHideFlags: 0

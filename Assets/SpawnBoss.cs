@@ -66,6 +66,7 @@ namespace Metroknight
             if (_other.CompareTag("Player") && !callOnce && !GameManager.Instance.THKDefeated)
             {
                 StartCoroutine(WalkIntoRoom());
+                GameManager.Instance.EnteringBossFight();
                 callOnce = true;
 
                 // Remove trigger collider to prevent re-triggering
