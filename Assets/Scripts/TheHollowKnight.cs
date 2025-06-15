@@ -41,6 +41,7 @@ namespace Metroknight
         public GameObject barageFireball;
 
         [HideInInspector] public bool outbreakAttack;
+        private ParticleSystem outbreakParticles;
 
         [HideInInspector] public bool bounceAttack;
         [HideInInspector] public float rotationDirectionToTarget;
@@ -49,6 +50,7 @@ namespace Metroknight
         int bounces = 0;
 
         [SerializeField] private AudioClip divingPillarSound;
+        [SerializeField] private AudioClip fireBallSound;
 
 
         public static TheHollowKnight Instance;
@@ -72,6 +74,9 @@ namespace Metroknight
             damageFlash = GetComponentInChildren<DamageFlash>();
             animator = GetComponentInChildren<Animator>();
             audioSource = GetComponent<AudioSource>();
+            outbreakParticles = GetComponentInChildren<ParticleSystem>();
+            outbreakParticles.Stop();
+
             ChangeState(EnemyStates.THK_Stage1);
             alive = true;
             Flip();
@@ -189,11 +194,11 @@ namespace Metroknight
                 }
                 else
                 {
-                    StartCoroutine(Lunge());
+                    // StartCoroutine(Lunge());
                     // StartCoroutine(Lunge());
                     // DiveAttackJump();
                     // BarrageBendDown();
-                    // OutbreakBendDown();
+                    OutbreakBendDown();
                     // BounceAttack();
                 }
             }
@@ -423,6 +428,7 @@ namespace Metroknight
             for (int i = 0; i < 10; i++)
             {
                 GameObject _projectile = Instantiate(barageFireball, transform.position, Quaternion.Euler(0, 0, _currentAngle));
+                audioSource.PlayOneShot(fireBallSound, .15f);
 
                 if (facingRight)
                 {
@@ -460,18 +466,27 @@ namespace Metroknight
             animator.SetBool("Cast", true);
             rb.velocity = Vector2.zero;
 
+            if (outbreakParticles != null)
+            {
+                outbreakParticles.gameObject.SetActive(true);
+                outbreakParticles.Play();
+            }
+
             for (int i = 0; i < 30; i++)
             {
                 Instantiate(barageFireball, transform.position, Quaternion.Euler(0, 0, Random.Range(100, 160))); // Downward random angle
                 Instantiate(barageFireball, transform.position, Quaternion.Euler(0, 0, Random.Range(20, 80))); // Diagonal right angle
                 Instantiate(barageFireball, transform.position, Quaternion.Euler(0, 0, Random.Range(240, 300))); // Diagonal left angle
+                audioSource.PlayOneShot(fireBallSound, .15f);
                 yield return new WaitForSeconds(0.2f); // Delay between each projectile
             }
+            outbreakParticles.Stop();
             yield return new WaitForSeconds(0.1f); // Wait for the barrage to finish
             rb.constraints = RigidbodyConstraints2D.None; // Unfreeze position
             rb.constraints = RigidbodyConstraints2D.FreezeRotation; // Freeze rotation
             rb.velocity = new Vector2(rb.velocity.x, -10); // Reset velocity to fall down
             yield return new WaitForSeconds(0.1f); // Wait for the fall down
+            outbreakParticles.gameObject.SetActive(false);
             animator.SetBool("Cast", false);
             ResetAllAttacks();
         }
