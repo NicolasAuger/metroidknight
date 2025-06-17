@@ -229,6 +229,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 6
+  maxHealth: 6
   recoilLength: 0.2
   recoilFactor: 1
   isRecoiling: 0
@@ -240,6 +241,7 @@ MonoBehaviour:
   hitSound: {fileID: 8300000, guid: e92a2f3fe24364b84860e994d65af5f9, type: 3}
   rb: {fileID: 0}
   animator: {fileID: 0}
+  enemyName: 
   chaseDistance: 10
   stunDuration: 0
 --- !u!95 &6517938370833974254

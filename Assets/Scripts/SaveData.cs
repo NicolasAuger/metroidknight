@@ -51,7 +51,9 @@ namespace Metroknight
             // Tests purpose
             //   DeleteFile("/save.player.data");
             //   DeleteFile("/save.maps.data");
+            //   DeleteFile("/save.bench.data");
             //   DeleteFile("/save.discovered_maps.data");
+            //   DeleteFile("/save.bosses.data");
             EnsureFileExists("/save.bench.data");
             EnsureFileExists("/save.player.data");
             EnsureFileExists("/save.shade.data");

@@ -4,7 +4,8 @@ using Cinemachine;
 namespace Metroknight {
     public class Enemy : MonoBehaviour
     {
-        [SerializeField] protected float health;
+        [SerializeField] public float health;
+        [SerializeField] public float maxHealth;
 
         [Header("Recoil")]
         [SerializeField] protected float recoilLength;
@@ -27,6 +28,7 @@ namespace Metroknight {
         protected AudioSource audioSource;
         protected CinemachineImpulseSource impulseSource;
 
+        public string enemyName;
 
         protected enum EnemyStates
         {
@@ -59,10 +61,13 @@ namespace Metroknight {
         };
 
         protected EnemyStates currentEnemyState;
-        protected virtual EnemyStates GetCurrentEnemyState {
+        protected virtual EnemyStates GetCurrentEnemyState
+        {
             get { return currentEnemyState; }
-            set {
-                if (currentEnemyState != value) {
+            set
+            {
+                if (currentEnemyState != value)
+                {
                     currentEnemyState = value;
                     ChangeCurrentAnimation();
                 }
@@ -78,6 +83,8 @@ namespace Metroknight {
             audioSource = GetComponent<AudioSource>();
             damageFlash = GetComponent<DamageFlash>();
             impulseSource = GetComponent<CinemachineImpulseSource>();
+            // TODO change this to health = maxHealth
+            health = maxHealth;
         }
 
 
@@ -104,7 +111,8 @@ namespace Metroknight {
             }
         }
 
-        public virtual void EnemyHit(float _damageDone, Vector2 _hitDirection, float _hitForce) {
+        public virtual void EnemyHit(float _damageDone, Vector2 _hitDirection, float _hitForce)
+        {
             health -= _damageDone;
 
             if (!isRecoiling && health > 0)
@@ -122,9 +130,12 @@ namespace Metroknight {
             }
         }
 
-        protected virtual void OnCollisionStay2D(Collision2D _other) {
-            if (_other.gameObject.CompareTag("Player") && !PlayerController.Instance.pState.invincible && health > 0) {
-                if (PlayerController.Instance.pState.dashing) {
+        protected virtual void OnCollisionStay2D(Collision2D _other)
+        {
+            if (_other.gameObject.CompareTag("Player") && !PlayerController.Instance.pState.invincible && health > 0)
+            {
+                if (PlayerController.Instance.pState.dashing)
+                {
                     PlayerController.Instance.pState.dashing = false;
                 }
                 Attack();
@@ -135,20 +146,28 @@ namespace Metroknight {
             }
         }
 
-        protected virtual void Death(float _destroyTime) {
+        protected virtual void Death(float _destroyTime)
+        {
             Destroy(gameObject, _destroyTime);
         }
 
-        protected virtual void Attack() {
+        protected virtual void Attack()
+        {
             PlayerController.Instance.TakeDamage(damage);
         }
 
-        protected virtual void UpdateEnemyStates() {}
+        protected virtual void UpdateEnemyStates() { }
 
-        protected virtual void ChangeCurrentAnimation() {}
+        protected virtual void ChangeCurrentAnimation() { }
 
-        protected void ChangeState(EnemyStates _newState) {
+        protected void ChangeState(EnemyStates _newState)
+        {
             GetCurrentEnemyState = _newState;
+        }
+        
+        public float GetHealth()
+        {
+            return health;
         }
     }
 }

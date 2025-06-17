@@ -7,7 +7,7 @@ namespace Metroknight
     {
         public static SpawnBoss Instance;
         [SerializeField] Transform spawnPoint;
-        [SerializeField] GameObject boss;
+        [SerializeField] Enemy boss;
         [SerializeField] Vector2 exitDirection;
         [SerializeField] GameObject blockingFloor;
         [SerializeField] Transform blockingFloorTarget;
@@ -86,7 +86,8 @@ namespace Metroknight
             yield return new WaitForSeconds(3f);
             StartCoroutine(PlayerController.Instance.WalkIntoNewScene(exitDirection, 1f));
             yield return new WaitForSeconds(1f);
-            Instantiate(boss, spawnPoint.position, Quaternion.identity);
+            Enemy _boss = Instantiate(boss, spawnPoint.position, Quaternion.identity);
+            UIBossHealthBar.Instance.DisplayBossHealthBar(_boss);
         }
 
         private void MoveBlockingFloor()

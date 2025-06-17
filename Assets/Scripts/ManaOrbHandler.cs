@@ -38,6 +38,8 @@ namespace Metroknight
         {
             for (int i = 0; i < manaOrbs.Count; i++)
             {
+                Debug.Log("Updating mana orb " + manaOrbs[i]);
+                Debug.Log("Updating mana orb2 " + orbFills[i]);
                 if (manaOrbs[i].activeInHierarchy && orbFills[i].fillAmount < 1)
                 {
                     orbFills[i].fillAmount += _manaGainFrom;

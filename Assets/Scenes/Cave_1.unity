@@ -2184,8 +2184,8 @@ MonoBehaviour:
   m_ShadowVolumeIntensityEnabled: 0
   m_ShadowVolumeIntensity: 0.75
   m_LocalBounds:
-    m_Center: {x: 10.64625, y: -1.96635, z: 0}
-    m_Extent: {x: 13.284349, y: 4.46585, z: 0}
+    m_Center: {x: 10.655849, y: -1.9701499, z: 0}
+    m_Extent: {x: 13.28735, y: 4.46405, z: 0}
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
   m_PointLightInnerRadius: 0
@@ -16406,6 +16406,17 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1963665158 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8001321490318515738, guid: e94619849125a40a59b95e74349de57f, type: 3}
+  m_PrefabInstance: {fileID: 3947251749493228858}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3056c19788b34777b2b9c11293d2ed3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1980531409
 GameObject:
   m_ObjectHideFlags: 0
@@ -16951,8 +16962,8 @@ MonoBehaviour:
   m_ShadowVolumeIntensityEnabled: 0
   m_ShadowVolumeIntensity: 0.75
   m_LocalBounds:
-    m_Center: {x: 13.974049, y: 5.12585, z: 0}
-    m_Extent: {x: 33.89045, y: 5.15015, z: 0}
+    m_Center: {x: 13.973559, y: 5.1196, z: 0}
+    m_Extent: {x: 33.88796, y: 5.145, z: 0}
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
   m_PointLightInnerRadius: 0
@@ -17304,6 +17315,10 @@ PrefabInstance:
       propertyPath: manaStorage
       value: 
       objectReference: {fileID: 1608347900}
+    - target: {fileID: 5425776342075892120, guid: aed9ffed7beac49fa92e7e67c0d60882, type: 3}
+      propertyPath: manaOrbHandler
+      value: 
+      objectReference: {fileID: 1963665158}
     - target: {fileID: 9059257841007337660, guid: aed9ffed7beac49fa92e7e67c0d60882, type: 3}
       propertyPath: m_Name
       value: Player
@@ -17806,11 +17821,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2824448530759520299, guid: 4fad0a7e804074f5781a002c49b43f97, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4.7
+      value: -4.67
       objectReference: {fileID: 0}
     - target: {fileID: 2824448530759520299, guid: 4fad0a7e804074f5781a002c49b43f97, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.44
+      value: 1.75
       objectReference: {fileID: 0}
     - target: {fileID: 2824448530759520299, guid: 4fad0a7e804074f5781a002c49b43f97, type: 3}
       propertyPath: m_LocalPosition.z

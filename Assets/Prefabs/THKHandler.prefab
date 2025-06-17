@@ -226,6 +226,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 100
+  maxHealth: 100
   recoilLength: 0
   recoilFactor: 1
   isRecoiling: 0
@@ -237,6 +238,7 @@ MonoBehaviour:
   hitSound: {fileID: 8300000, guid: e92a2f3fe24364b84860e994d65af5f9, type: 3}
   rb: {fileID: 0}
   animator: {fileID: 0}
+  enemyName: 
   slashEffect: {fileID: 4390498643010443790, guid: 3b0b3ceca73744ed79eba778eebc44d4, type: 3}
   sideAttackTransform: {fileID: 2059317668756234374}
   upAttackTransform: {fileID: 4876289370307847483}

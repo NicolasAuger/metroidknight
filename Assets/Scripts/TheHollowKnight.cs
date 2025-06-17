@@ -76,6 +76,7 @@ namespace Metroknight
             audioSource = GetComponent<AudioSource>();
             outbreakParticles = GetComponentInChildren<ParticleSystem>();
             outbreakParticles.Stop();
+            enemyName = "The HollowKnight";
 
             ChangeState(EnemyStates.THK_Stage1);
             alive = true;
@@ -190,7 +191,7 @@ namespace Metroknight
                 if (Vector2.Distance(PlayerController.Instance.transform.position, transform.position) < attackRange)
                 {
                     Debug.Log("THK Stage 1 Triple Slash");
-                    StartCoroutine(TripleSlash());
+                    // StartCoroutine(TripleSlash());
                 }
                 else
                 {
@@ -198,7 +199,7 @@ namespace Metroknight
                     // StartCoroutine(Lunge());
                     // DiveAttackJump();
                     // BarrageBendDown();
-                    OutbreakBendDown();
+                    // OutbreakBendDown();
                     // BounceAttack();
                 }
             }

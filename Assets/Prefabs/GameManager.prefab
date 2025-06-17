@@ -56,6 +56,9 @@ MonoBehaviour:
   fadeTime: 0.25
   gameIsPaused: 0
   zoneSound: {fileID: 8300000, guid: 75a899252e9c84a09a0115abe8aa2076, type: 3}
+  bossSound: {fileID: 8300000, guid: b4be9354b2e054ad79498671452473dc, type: 3}
+  bossDeadSound: {fileID: 8300000, guid: 7aa4404990e734060b1349f77def7344, type: 3}
+  THKDefeated: 0
 --- !u!114 &5506162900182721266
 MonoBehaviour:
   m_ObjectHideFlags: 0
