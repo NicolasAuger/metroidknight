@@ -11,6 +11,7 @@ namespace Metroknight {
     [SerializeField] GameObject halfMana, fullMana;
     [SerializeField] GameObject deathScreen;
     public GameObject mapHandler;
+    public GameObject bossHealthBar;
     public GameObject inventory;
 
     public enum ManaState
@@ -37,12 +38,14 @@ namespace Metroknight {
       }
       DontDestroyOnLoad(gameObject);
 
-      sceneFader = GetComponentInChildren<SceneFader>();// Persist across scenes
+      sceneFader = GetComponentInChildren<SceneFader>(); // Persist across scenes
+      bossHealthBar.SetActive(false);
     }
 
     public IEnumerator ActivateDeathScreen()
     {
       yield return new WaitForSeconds(0.8f);
+      bossHealthBar.SetActive(false);
       StartCoroutine(sceneFader.Fade(SceneFader.FadeDirection.In));
       yield return new WaitForSeconds(0.8f);
       deathScreen.SetActive(true);

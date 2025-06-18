@@ -50,7 +50,7 @@ namespace Metroknight
             switch (GetCurrentEnemyState)
             {
                 case EnemyStates.Shade_Idle:
-                    rb.velocity = new Vector2(0, 0);
+                    rb.linearVelocity = new Vector2(0, 0);
                     if (_dist < chaseDistance)
                     {
                         ChangeState(EnemyStates.Shade_Chase);

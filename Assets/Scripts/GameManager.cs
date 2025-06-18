@@ -106,7 +106,7 @@ namespace Metroknight
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            bench = FindObjectOfType<Bench>();
+            bench = FindFirstObjectByType<Bench>();
             defaultRespawnPoint = GameObject.Find("DefaultRespawnPoint");
             platformingRespawnPoint = defaultRespawnPoint.transform.position;
 

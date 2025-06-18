@@ -16,7 +16,7 @@ namespace Metroknight
         override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
             // Since it's the idle state
-            rb.velocity = Vector2.zero;
+            rb.linearVelocity = Vector2.zero;
             RunToPlayer(animator);
 
             if (TheHollowKnight.Instance.attackCountdown <= 0)
@@ -27,7 +27,7 @@ namespace Metroknight
 
             if (!TheHollowKnight.Instance.Grounded())
             {
-                rb.velocity = new Vector2(rb.velocity.x, -25f); // if not grounded, fall down
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, -25f); // if not grounded, fall down
             }
         }
 

@@ -38,7 +38,7 @@ namespace Metroknight
             else
             {
                 // If the boss is not grounded, make it fall to ground
-                rb.velocity = new Vector2(rb.velocity.x, -25f);
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, -25f);
             }
 
             // If the player is within attack range, stop running

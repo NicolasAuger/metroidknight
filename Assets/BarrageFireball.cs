@@ -19,7 +19,7 @@ namespace Metroknight
 
         private void Update()
         {
-            var _dir = rb.velocity;
+            var _dir = rb.linearVelocity;
 
             if (_dir != Vector2.zero)
             {
@@ -39,7 +39,6 @@ namespace Metroknight
 
         private void OnTriggerEnter2D(Collider2D _other)
         {
-            Debug.Log(_other.gameObject.layer);
             if (_other.CompareTag("Player") && !PlayerController.Instance.pState.invincible)
             {
                 _other.GetComponent<PlayerController>().TakeDamage(TheHollowKnight.Instance.damage);

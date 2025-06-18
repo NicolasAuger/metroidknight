@@ -125,7 +125,7 @@ namespace Metroknight {
 
                 GameObject _manaBlood = Instantiate(manaBlood, transform.position, Quaternion.identity);
                 Destroy(_manaBlood, 1f);
-                rb.velocity = _hitForce * recoilFactor * _hitDirection;
+                rb.linearVelocity = _hitForce * recoilFactor * _hitDirection;
                 isRecoiling = true;
             }
         }

@@ -14,7 +14,7 @@ namespace Metroknight
 
         private void OnEnable()
         {
-            bench = FindObjectOfType<Bench>();
+            bench = FindFirstObjectByType<Bench>();
             if (bench != null)
             {
                 if (bench.interacted)

@@ -211,7 +211,7 @@ namespace Metroknight
 
             gravity = rb.gravityScale;
 
-            manaOrbHandler = FindObjectOfType<ManaOrbHandler>();
+            manaOrbHandler = FindFirstObjectByType<ManaOrbHandler>();
 
             Mana = mana;
             manaStorage.fillAmount = Mana;
@@ -219,7 +219,7 @@ namespace Metroknight
 
             SaveData.Instance.LoadPlayer();
 
-            FindObjectOfType<HeartController>().InstantiateHeartContainers();
+            FindFirstObjectByType<HeartController>().InstantiateHeartContainers();
 
             if (halfMana == true)
             {
@@ -327,10 +327,10 @@ namespace Metroknight
 
         private void Move()
         {
-            if (pState.healing) rb.velocity = new Vector2(0, 0);
-            rb.velocity = new Vector2(xAxis * walkSpeed, rb.velocity.y);
-            animator.SetBool("Walking", rb.velocity.x != 0 && Grounded());
-            if (rb.velocity.x != 0 && Grounded())
+            if (pState.healing) rb.linearVelocity = new Vector2(0, 0);
+            rb.linearVelocity = new Vector2(xAxis * walkSpeed, rb.linearVelocity.y);
+            animator.SetBool("Walking", rb.linearVelocity.x != 0 && Grounded());
+            if (rb.linearVelocity.x != 0 && Grounded())
             {
                 if (!runningAudioSource.isPlaying)
                 {
@@ -384,7 +384,7 @@ namespace Metroknight
                 {
                     audioSource.PlayOneShot(jumpSound);
                 }
-                rb.velocity = new Vector3(rb.velocity.x, jumpForce);
+                rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce);
                 pState.jumping = true;
             }
 
@@ -394,18 +394,18 @@ namespace Metroknight
                 audioSource.PlayOneShot(multipleJumpSound);
                 pState.jumping = true;
                 airJumpCounter++;
-                rb.velocity = new Vector3(rb.velocity.x, jumpForce);
+                rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce);
             }
 
             // Variable jump height (rb.velocity.y > 3 in the tutorial)
-            if (Input.GetButtonUp("Jump") && rb.velocity.y > 0)
+            if (Input.GetButtonUp("Jump") && rb.linearVelocity.y > 0)
             {
                 pState.jumping = false;
-                rb.velocity = new Vector2(rb.velocity.x, 0);
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0);
             }
 
             // Clamp the fall speed
-            rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, -maxFallSpeed, rb.velocity.y));
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, Mathf.Clamp(rb.linearVelocity.y, -maxFallSpeed, rb.linearVelocity.y));
 
             animator.SetBool("Jumping", !Grounded());
         }
@@ -445,14 +445,14 @@ namespace Metroknight
         void UpdateCameraYDampWhileFalling()
         {
             // If falling past a certain speed threshold
-            if (rb.velocity.y < playerFallSpeedThreshold && !CameraManager.Instance.isLerpingYDamping && !CameraManager.Instance.hasLearpedYDamping)
+            if (rb.linearVelocity.y < playerFallSpeedThreshold && !CameraManager.Instance.isLerpingYDamping && !CameraManager.Instance.hasLearpedYDamping)
             {
                 // Lerp the YDamping to a lower value
                 StartCoroutine(CameraManager.Instance.LerpYDaming(true));
             }
 
             // If standing still or moving up
-            if (rb.velocity.y >= 0 && !CameraManager.Instance.isLerpingYDamping && CameraManager.Instance.hasLearpedYDamping)
+            if (rb.linearVelocity.y >= 0 && !CameraManager.Instance.isLerpingYDamping && CameraManager.Instance.hasLearpedYDamping)
             {
                 // Reset camera function
                 CameraManager.Instance.hasLearpedYDamping = false;
@@ -473,7 +473,7 @@ namespace Metroknight
                 isWallSliding = true;
                 if (!slideSoundPlayed) audioSource.PlayOneShot(wallSlideSound);
                 slideSoundPlayed = true;
-                rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, -wallSlidingSpeed, float.MaxValue));
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, Mathf.Clamp(rb.linearVelocity.y, -wallSlidingSpeed, float.MaxValue));
             }
             else
             {
@@ -495,7 +495,7 @@ namespace Metroknight
             {
                 isWallJumping = true;
                 audioSource.PlayOneShot(wallJumpSound);
-                rb.velocity = new Vector2(wallJumpingDirection * wallJumpingPower.x, wallJumpingPower.y);
+                rb.linearVelocity = new Vector2(wallJumpingDirection * wallJumpingPower.x, wallJumpingPower.y);
                 dashed = false;
                 airJumpCounter = 0;
 
@@ -547,7 +547,7 @@ namespace Metroknight
             // } else {
             //     rb.velocity = new Vector2(-transform.localScale.x * dashSpeed, 0);
             // }
-            rb.velocity = new Vector2(_dir * dashSpeed, 0);
+            rb.linearVelocity = new Vector2(_dir * dashSpeed, 0);
             if (Grounded()) Instantiate(dashEffect, transform);
             yield return new WaitForSeconds(dashTime);
             rb.gravityScale = gravity;
@@ -645,11 +645,11 @@ namespace Metroknight
             {
                 if (pState.lookingRight)
                 {
-                    rb.velocity = new Vector2(-recoilXSpeed, 0);
+                    rb.linearVelocity = new Vector2(-recoilXSpeed, 0);
                 }
                 else
                 {
-                    rb.velocity = new Vector2(recoilXSpeed, 0);
+                    rb.linearVelocity = new Vector2(recoilXSpeed, 0);
                 }
             }
 
@@ -658,11 +658,11 @@ namespace Metroknight
                 rb.gravityScale = 0;
                 if (yAxis < 0)
                 {
-                    rb.velocity = new Vector2(rb.velocity.x, recoilYSpeed);
+                    rb.linearVelocity = new Vector2(rb.linearVelocity.x, recoilYSpeed);
                 }
                 else if (yAxis > 0)
                 {
-                    rb.velocity = new Vector2(rb.velocity.x, -recoilYSpeed);
+                    rb.linearVelocity = new Vector2(rb.linearVelocity.x, -recoilYSpeed);
                 }
 
                 // Might fix the air jump bug not being reset while y recoiling
@@ -863,7 +863,7 @@ namespace Metroknight
             {
                 rb.gravityScale = gravity;
                 pState.cutscene = false;
-                rb.velocity += downSpellForce * Vector2.down;
+                rb.linearVelocity += downSpellForce * Vector2.down;
             }
         }
 
@@ -895,7 +895,7 @@ namespace Metroknight
             {
                 audioSource.PlayOneShot(castSound);
                 Instantiate(upSpellExplosion, transform);
-                rb.velocity = Vector2.zero;
+                rb.linearVelocity = Vector2.zero;
             }
 
             // Down cast
@@ -924,7 +924,7 @@ namespace Metroknight
             // If exit direction is upwards
             if (_exitDir.y > 0)
             {
-                rb.velocity = jumpForce * _exitDir;
+                rb.linearVelocity = jumpForce * _exitDir;
             }
 
             // If exit direction requires horitontal movement
@@ -942,7 +942,7 @@ namespace Metroknight
         public IEnumerator Death()
         {
             pState.alive = false;
-            rb.velocity = Vector2.zero;
+            rb.linearVelocity = Vector2.zero;
             rb.gravityScale = 0;
             Time.timeScale = 1f;
             GameObject _bloodSpurtParticles = Instantiate(bloodSpurt, transform.position, Quaternion.identity);

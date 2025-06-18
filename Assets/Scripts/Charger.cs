@@ -60,17 +60,17 @@ public class Charger : Enemy
 
                     if (transform.localScale.x > 0)
                     {
-                        rb.velocity = new Vector2(speed, rb.velocity.y);
+                        rb.linearVelocity = new Vector2(speed, rb.linearVelocity.y);
                     }
                     else
                     {
-                        rb.velocity = new Vector2(-speed, rb.velocity.y);
+                        rb.linearVelocity = new Vector2(-speed, rb.linearVelocity.y);
                     }
                     break;
 
                 case EnemyStates.Charger_Surprised:
                     audioSource.PlayOneShot(surprisedSound);
-                    rb.velocity = new Vector2(0, jumpForce);
+                    rb.linearVelocity = new Vector2(0, jumpForce);
                     ChangeState(EnemyStates.Charger_Charge);
                     break;
 
@@ -82,16 +82,16 @@ public class Charger : Enemy
                         {
                             if (transform.localScale.x > 0)
                             {
-                                rb.velocity = new Vector2(speed * chargeSpeedMultiplier, rb.velocity.y);
+                                rb.linearVelocity = new Vector2(speed * chargeSpeedMultiplier, rb.linearVelocity.y);
                             }
                             else
                             {
-                                rb.velocity = new Vector2(-speed * chargeSpeedMultiplier, rb.velocity.y);
+                                rb.linearVelocity = new Vector2(-speed * chargeSpeedMultiplier, rb.linearVelocity.y);
                             }
                         }
                         else
                         {
-                            rb.velocity = new Vector2(0, rb.velocity.y);
+                            rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
                         }
                     }
                     else

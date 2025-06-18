@@ -58,6 +58,7 @@ namespace Metroknight
             {
                 shouldBlockEntry = false;
                 RemoveBlockingFloor();
+                UIManager.Instance.bossHealthBar.SetActive(false);
             }
         }
 
@@ -78,7 +79,7 @@ namespace Metroknight
         {
             PlayerController.Instance.pState.cutscene = true;
             PlayerController.Instance.pState.invincible = true;
-            PlayerController.Instance.rb.velocity = Vector2.zero;
+            PlayerController.Instance.rb.linearVelocity = Vector2.zero;
             PlayerController.Instance.xAxis = 0f;
             PlayerController.Instance.runningAudioSource.Stop();
             PlayerController.Instance.animator.SetBool("Walking", false);
@@ -87,7 +88,8 @@ namespace Metroknight
             StartCoroutine(PlayerController.Instance.WalkIntoNewScene(exitDirection, 1f));
             yield return new WaitForSeconds(1f);
             Enemy _boss = Instantiate(boss, spawnPoint.position, Quaternion.identity);
-            UIBossHealthBar.Instance.DisplayBossHealthBar(_boss);
+            UIManager.Instance.bossHealthBar.SetActive(true);
+            UIBossHealthBar.Instance.DisplayBossHealthBar(_boss, "The Hollow Knight");
         }
 
         private void MoveBlockingFloor()

@@ -19,7 +19,7 @@ namespace Metroknight
         {
             rb.gravityScale = 0f; // Disable gravity during lunge
             int _dir = TheHollowKnight.Instance.facingRight ? 1 : -1;
-            rb.velocity = new Vector2(_dir * (TheHollowKnight.Instance.speed * 5), 0f);
+            rb.linearVelocity = new Vector2(_dir * (TheHollowKnight.Instance.speed * 5), 0f);
 
             if (Vector2.Distance(PlayerController.Instance.transform.position, rb.position) <= TheHollowKnight.Instance.attackRange &&
                 !TheHollowKnight.Instance.damagedPlayer && !PlayerController.Instance.pState.invincible)

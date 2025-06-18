@@ -45,11 +45,11 @@ public class Crawler : Enemy
 
                     if (transform.localScale.x > 0)
                     {
-                        rb.velocity = new Vector2(speed, rb.velocity.y);
+                        rb.linearVelocity = new Vector2(speed, rb.linearVelocity.y);
                     }
                     else
                     {
-                        rb.velocity = new Vector2(-speed, rb.velocity.y);
+                        rb.linearVelocity = new Vector2(-speed, rb.linearVelocity.y);
                     }
                     break;
 

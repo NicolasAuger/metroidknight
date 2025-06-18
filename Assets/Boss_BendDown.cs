@@ -31,7 +31,7 @@ namespace Metroknight
 
                 if (TheHollowKnight.Instance.TouchedWall())
                 {
-                    TheHollowKnight.Instance.moveToPosition.x = rb.velocity.x;
+                    TheHollowKnight.Instance.moveToPosition.x = rb.linearVelocity.x;
                     _newPos = Vector2.MoveTowards(
                         rb.position,
                         TheHollowKnight.Instance.moveToPosition,

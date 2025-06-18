@@ -100,7 +100,7 @@ namespace Metroknight
 
             if (stunned)
             {
-                rb.velocity = Vector2.zero;
+                rb.linearVelocity = Vector2.zero;
             }
         }
 
@@ -190,12 +190,11 @@ namespace Metroknight
             {
                 if (Vector2.Distance(PlayerController.Instance.transform.position, transform.position) < attackRange)
                 {
-                    Debug.Log("THK Stage 1 Triple Slash");
-                    // StartCoroutine(TripleSlash());
+                    StartCoroutine(TripleSlash());
                 }
                 else
                 {
-                    // StartCoroutine(Lunge());
+                    StartCoroutine(Lunge());
                     // StartCoroutine(Lunge());
                     // DiveAttackJump();
                     // BarrageBendDown();
@@ -293,7 +292,7 @@ namespace Metroknight
         IEnumerator TripleSlash()
         {
             attacking = true;
-            rb.velocity = Vector2.zero;
+            rb.linearVelocity = Vector2.zero;
 
             animator.SetTrigger("Slash");
             SlashAngle();
@@ -350,7 +349,7 @@ namespace Metroknight
         IEnumerator Parry()
         {
             parrying = true;
-            rb.velocity = Vector2.zero;
+            rb.linearVelocity = Vector2.zero;
             animator.SetBool("Parry", true);
             // Parry lasts 0.75 seconds, so we set 0.8 over there
             yield return new WaitForSeconds(0.8f);
@@ -362,7 +361,7 @@ namespace Metroknight
         IEnumerator Slash()
         {
             attacking = true;
-            rb.velocity = Vector2.zero;
+            rb.linearVelocity = Vector2.zero;
 
             animator.SetTrigger("Slash");
             SlashAngle();
@@ -417,14 +416,14 @@ namespace Metroknight
         void BarrageBendDown()
         {
             attacking = true;
-            rb.velocity = Vector2.zero;
+            rb.linearVelocity = Vector2.zero;
             barrageAttack = true;
             animator.SetTrigger("BendDown");
         }
 
         public IEnumerator Barrage()
         {
-            rb.velocity = Vector2.zero;
+            rb.linearVelocity = Vector2.zero;
             float _currentAngle = 30f; // Starting angle for the barrage
             for (int i = 0; i < 10; i++)
             {
@@ -455,7 +454,7 @@ namespace Metroknight
         public void OutbreakBendDown()
         {
             attacking = true;
-            rb.velocity = Vector2.zero;
+            rb.linearVelocity = Vector2.zero;
             moveToPosition = new Vector2(transform.position.x, rb.position.y + 5);
             outbreakAttack = true;
             animator.SetTrigger("BendDown");
@@ -465,7 +464,7 @@ namespace Metroknight
         {
             yield return new WaitForSeconds(1f); // Wait for the bend down animation to finish
             animator.SetBool("Cast", true);
-            rb.velocity = Vector2.zero;
+            rb.linearVelocity = Vector2.zero;
 
             if (outbreakParticles != null)
             {
@@ -485,7 +484,7 @@ namespace Metroknight
             yield return new WaitForSeconds(0.1f); // Wait for the barrage to finish
             rb.constraints = RigidbodyConstraints2D.None; // Unfreeze position
             rb.constraints = RigidbodyConstraints2D.FreezeRotation; // Freeze rotation
-            rb.velocity = new Vector2(rb.velocity.x, -10); // Reset velocity to fall down
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, -10); // Reset velocity to fall down
             yield return new WaitForSeconds(0.1f); // Wait for the fall down
             outbreakParticles.gameObject.SetActive(false);
             animator.SetBool("Cast", false);
@@ -501,7 +500,7 @@ namespace Metroknight
 
         public void BounceBendDown()
         {
-            rb.velocity = Vector2.zero;
+            rb.linearVelocity = Vector2.zero;
             moveToPosition = new Vector2(PlayerController.Instance.transform.position.x, rb.position.y + 10);
             bounceAttack = true;
             animator.SetTrigger("BendDown");
@@ -616,7 +615,7 @@ namespace Metroknight
         {
             ResetAllAttacks();
             alive = false;
-            rb.velocity = new Vector2(rb.velocity.x, -25);
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, -25);
             animator.SetTrigger("Die");
         }
 

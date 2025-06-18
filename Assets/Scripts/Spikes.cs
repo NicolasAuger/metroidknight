@@ -17,7 +17,7 @@ namespace Metroknight
     {
       PlayerController.Instance.pState.cutscene = true;
       PlayerController.Instance.pState.invincible = true;
-      PlayerController.Instance.rb.velocity = Vector2.zero;
+      PlayerController.Instance.rb.linearVelocity = Vector2.zero;
       PlayerController.Instance.rb.gravityScale = 0;
 
       // Time.timeScale = 0;
