@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: HealthBarNoise
+  m_Name: HealthBarNoiseWithTiling
   m_Shader: {fileID: -6465566751694194690, guid: d3067890ac6a047eeb989d7c08a3f46e, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -72,6 +72,8 @@ Material:
     - _NegativeOffsertSpeedOnY: {r: 0, g: -0.3, b: 0, a: 0}
     - _OffsetSpeedOnX: {r: 0.5, g: 0, b: 0, a: 0}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
+    - _Tiling: {r: 1, g: 1, b: 0, a: 0}
+    - _TilingOffset: {r: 66.25, g: 1, b: 0, a: 0}
     - _TwirlOffsetSpeed: {r: 1, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
