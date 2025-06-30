@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Metroknight
@@ -23,16 +21,19 @@ namespace Metroknight
 
             if (_dir != Vector2.zero)
             {
-                Vector3 _frontVector = Vector3.right;
-                Quaternion _targetRotation = Quaternion.FromToRotation(_frontVector, _dir - (Vector2)transform.position);
+                // Get the angle in radians and convert it to degrees
+                float _targetAngle = Mathf.Atan2(_dir.y, Mathf.Abs(_dir.x)) * Mathf.Rad2Deg;
+
                 if (_dir.x > 0)
                 {
-                    transform.rotation = Quaternion.Lerp(transform.rotation, _targetRotation, turnSpeed);
-                    transform.eulerAngles = new Vector3(transform.eulerAngles.x, 180, transform.eulerAngles.z);
+                    transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, 0, _targetAngle), turnSpeed);
                 }
                 else
                 {
-                    transform.rotation = Quaternion.Lerp(transform.rotation, _targetRotation, turnSpeed);
+                    transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, 0, _targetAngle), turnSpeed);
+
+                    // Rotate 180f on Y to face the player
+                    transform.eulerAngles = new Vector3(transform.eulerAngles.x, 180, transform.eulerAngles.z);
                 }
             }
         }
