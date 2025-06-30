@@ -11,10 +11,13 @@ namespace Metroknight
         [SerializeField] Vector2 exitDirection;
         [SerializeField] GameObject blockingFloor;
         [SerializeField] Transform blockingFloorTarget;
+        [SerializeField] GameObject floor;
         BoxCollider2D col;
+        BoxCollider2D floorCol;
         Transform originalBlockingFloorPosition;
         bool callOnce = false;
         bool shouldBlockEntry = false;
+        float originalFloorColOffsetX;
         public bool isBossDead = false;
 
         private void Awake()
@@ -45,6 +48,8 @@ namespace Metroknight
         {
             col = GetComponent<BoxCollider2D>();
             originalBlockingFloorPosition = blockingFloor.transform;
+            floorCol = floor.GetComponent<BoxCollider2D>();
+            originalFloorColOffsetX = floorCol.offset.x;
         }
 
         private void FixedUpdate()
@@ -100,8 +105,8 @@ namespace Metroknight
                 new Vector2(blockingFloorTarget.position.x, blockingFloorTarget.position.y),
                 1f * Time.fixedDeltaTime
             );
-            blockingFloor.GetComponent<Collider2D>().enabled = true;
             blockingFloor.GetComponent<Rigidbody2D>().MovePosition(_newPos);
+            floorCol.offset = new Vector2(8.5f, floorCol.offset.y);
         }
 
         private void RemoveBlockingFloor()
@@ -113,7 +118,7 @@ namespace Metroknight
                 1f * Time.fixedDeltaTime
             );
             blockingFloor.GetComponent<Rigidbody2D>().MovePosition(_newPos);
-            blockingFloor.GetComponent<Collider2D>().enabled = false;
+            floorCol.offset = new Vector2(originalFloorColOffsetX, floorCol.offset.y);
         }
     }
 }
