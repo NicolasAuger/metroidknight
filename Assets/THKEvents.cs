@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Metroknight
@@ -10,20 +9,27 @@ namespace Metroknight
         // Used as an event in Boss_Slash animation
         void SlashDamagePlayer()
         {
-            if (PlayerController.Instance.transform.position.x > transform.position.x ||
-                PlayerController.Instance.transform.position.x < transform.position.x)
-            {
+            Vector2 _directionToPlayer = PlayerController.Instance.transform.position - transform.position;
+            TheHollowKnight.Instance.SlashAngle();
+            
+            // Prioritize vertical attacks based on the player's position relative to the boss
+            // if (_directionToPlayer.y > verticalThreshold)
+            // {
+            //     Hit(TheHollowKnight.Instance.upAttackTransform, TheHollowKnight.Instance.upAttackArea);
+            // }
+
+            // Will probably never happend, but just in case
+            // else if (_directionToPlayer.y < -verticalThreshold)
+            // {
+            //     Hit(TheHollowKnight.Instance.downAttackTransform, TheHollowKnight.Instance.downAttackArea);
+            // }
+            // else
+            // {
+                // Side attack if the Y difference is not significant
                 Hit(TheHollowKnight.Instance.sideAttackTransform, TheHollowKnight.Instance.sideAttackArea);
-            }
-            else if (PlayerController.Instance.transform.position.y > transform.position.y)
-            {
-                Hit(TheHollowKnight.Instance.upAttackTransform, TheHollowKnight.Instance.upAttackArea);
-            }
-            else if (PlayerController.Instance.transform.position.y < transform.position.y)
-            {
-                Hit(TheHollowKnight.Instance.downAttackTransform, TheHollowKnight.Instance.downAttackArea);
-            }
+            // }
         }
+
         void Hit(Transform _attackTransform, Vector2 _attackArea)
         {
             Collider2D[] _objectsToHit = Physics2D.OverlapBoxAll(_attackTransform.position, _attackArea, 0f);
@@ -31,7 +37,7 @@ namespace Metroknight
             {
                 if (_objectsToHit[i].GetComponent<PlayerController>() != null && !PlayerController.Instance.pState.invincible)
                 {
-                    PlayerController.Instance.TakeDamage(TheHollowKnight.Instance.damage);
+                    _objectsToHit[i].GetComponent<PlayerController>().TakeDamage(TheHollowKnight.Instance.damage);
 
                     if (PlayerController.Instance.pState.alive)
                     {
@@ -42,9 +48,10 @@ namespace Metroknight
         }
 
         // Used as an event in Boss_Parry animation
+        // Parrying property is now handled in main HollowKnight script
         void Parrying()
         {
-            TheHollowKnight.Instance.parrying = true;
+            // TheHollowKnight.Instance.parrying = true;
         }
 
         // Used as an event in Boss_BendDown animation last frame

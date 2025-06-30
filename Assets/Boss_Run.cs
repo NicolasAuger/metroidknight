@@ -17,6 +17,8 @@ namespace Metroknight
         // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
         override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
+            if (TheHollowKnight.Instance.attacking || TheHollowKnight.Instance.parrying) return;
+
             TargetPlayerPosition(animator);
 
             if (TheHollowKnight.Instance.attackCountdown <= 0)
@@ -30,7 +32,7 @@ namespace Metroknight
         {
             if (TheHollowKnight.Instance.Grounded())
             {
-                TheHollowKnight.Instance.Flip();
+                // TheHollowKnight.Instance.Flip();
                 Vector2 _target = new Vector2(PlayerController.Instance.transform.position.x, rb.position.y);
                 Vector2 _newPos = Vector2.MoveTowards(rb.position, _target, TheHollowKnight.Instance.runSpeed * Time.fixedDeltaTime);
                 rb.MovePosition(_newPos);
@@ -41,8 +43,10 @@ namespace Metroknight
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, -25f);
             }
 
-            // If the player is within attack range, stop running
-            if (Vector2.Distance(PlayerController.Instance.transform.position, rb.position) <= TheHollowKnight.Instance.attackRange)
+            float _distance = Vector2.Distance(PlayerController.Instance.transform.position, rb.position);
+
+            // Stop running if the distance between boss & player is less than range + buffer zone
+            if (_distance <= TheHollowKnight.Instance.attackRange - TheHollowKnight.Instance.bufferZone)
             {
                 animator.SetBool("Run", false);
             }

@@ -1,18 +1,11 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Metroknight
 {
     public class TheHollowKnight : Enemy
     {
-        [SerializeField] GameObject slashEffect;
-        public Transform sideAttackTransform, upAttackTransform, downAttackTransform;
-        public Vector2 sideAttackArea, upAttackArea, downAttackArea;
-
-        public float attackRange;
-        public float attackTimer;
-
+        bool alive;
 
         [Header("Ground Check Settings")]
         [SerializeField] public Transform groundCheckPoint;
@@ -20,38 +13,74 @@ namespace Metroknight
         [SerializeField] private float groundCheckY = 0.2f;
         [SerializeField] private float groundCheckX = 0.5f;
         [SerializeField] private LayerMask groundLayer;
+        [HideInInspector] public GameObject groundShakeSmoke;
+        [Space(5)]
 
-        int hitCounter;
-        bool stunned, canStun;
-        bool alive;
-
+        [Header("Run Settings")]
+        public float bufferZone = 1f; // Hysteresis (tampons zone to prevent boss jittering between idle & run)
         [HideInInspector] public float runSpeed;
         [HideInInspector] public bool facingRight;
-        [HideInInspector] public bool attacking;
-        [HideInInspector] public float attackCountdown;
-        [HideInInspector] public bool damagedPlayer = false;
-        [HideInInspector] public bool parrying;
+        [Space(5)]
 
-        [HideInInspector] public Vector2 moveToPosition;
-        [HideInInspector] public bool diveAttack;
+        [Header("Attack Settings")]
+        [SerializeField] GameObject slashEffect;
+        public Transform sideAttackTransform, upAttackTransform, downAttackTransform;
+        public Vector2 sideAttackArea, upAttackArea, downAttackArea;
+        public float attackRange;
+        public float attackTimer;
+        [HideInInspector] public bool attacking;
+        [HideInInspector] public bool damagedPlayer = false;
+        [HideInInspector] public float attackCountdown;
+        private Coroutine tripleSlashCoroutine;
+        [Space(5)]
+
+        [Header("Stun Settings")]
+        bool stunned, canStun;
+        int hitCounter;
+        [Space(5)]
+
+        [Header("Parry Settings")]
+        [HideInInspector] public bool parrying;
+        private Coroutine parryCoroutine;
+        [Space(5)]
+
+        [Header("Particles")]
+        [SerializeField] ParticleSystem outbreakParticles;
+        [SerializeField] ParticleSystem parryParticles;
+        [SerializeField] ParticleSystem tripleSlashParticles;
+        [Space(10)]
+
+        [Header("----- SPECIAL ATTACKS -----")]
+        [Space(10)]
+
+        [Header("Lunge Attack Settings")]
+        public bool lunging = false;
+        [Space(5)]
+
+        [Header("Diving Attack Settings")]
+        public Vector2 moveToPosition;
         public GameObject divingCollider;
         public GameObject pillar;
+        [SerializeField] private AudioClip divingPillarSound;
+        [HideInInspector] public bool diveAttack;
+        [Space(5)]
 
-        [HideInInspector] public bool barrageAttack;
+        [Header("Barrage Attack Settings")]
         public GameObject barageFireball;
+        [SerializeField] private AudioClip fireBallSound;
+        [HideInInspector] public bool barrageAttack;
+        [Space(5)]
 
-        [HideInInspector] public bool outbreakAttack;
-        private ParticleSystem outbreakParticles;
-
+        [Header("Bounce Attack Settings")]
+        public int bounceCount;
+        int bounces = 0;
         [HideInInspector] public bool bounceAttack;
         [HideInInspector] public float rotationDirectionToTarget;
-        public int bounceCount;
-        [HideInInspector] public GameObject groundShakeSmoke;
-        int bounces = 0;
+        [Space(5)]
 
-        [SerializeField] private AudioClip divingPillarSound;
-        [SerializeField] private AudioClip fireBallSound;
-
+        [Header("Outbreak Attack Settings")]
+        [HideInInspector] public bool outbreakAttack;
+        [Space(5)]
 
         public static TheHollowKnight Instance;
 
@@ -74,7 +103,6 @@ namespace Metroknight
             damageFlash = GetComponentInChildren<DamageFlash>();
             animator = GetComponentInChildren<Animator>();
             audioSource = GetComponent<AudioSource>();
-            outbreakParticles = GetComponentInChildren<ParticleSystem>();
             outbreakParticles.Stop();
             enemyName = "The HollowKnight";
 
@@ -102,6 +130,12 @@ namespace Metroknight
             {
                 rb.linearVelocity = Vector2.zero;
             }
+        }
+
+        protected void FixedUpdate()
+        {
+            if (attacking || lunging) return;
+            Flip();
         }
 
         public void Flip()
@@ -132,20 +166,7 @@ namespace Metroknight
             }
         }
 
-        public bool TouchedWall()
-        {
-            if (Physics2D.Raycast(wallCheckPoint.position, Vector2.down, groundCheckY, groundLayer) ||
-                Physics2D.Raycast(wallCheckPoint.position + new Vector3(groundCheckX, 0, 0), Vector2.down, groundCheckX, groundLayer) ||
-                Physics2D.Raycast(wallCheckPoint.position + new Vector3(-groundCheckX, 0, 0), Vector2.down, groundCheckX, groundLayer))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
+        #region Enemy States
         protected override void UpdateEnemyStates()
         {
             if (PlayerController.Instance != null)
@@ -154,35 +175,36 @@ namespace Metroknight
                 {
                     case EnemyStates.THK_Stage1:
                         canStun = true;
-                        attackTimer = 3f;
+                        attackTimer = 1.5f;
                         runSpeed = speed;
                         break;
 
                     case EnemyStates.THK_Stage2:
                         canStun = true;
-                        attackTimer = 2f;
+                        attackTimer = 1f;
                         break;
 
                     case EnemyStates.THK_Stage3:
                         canStun = false;
-                        attackTimer = 3f;
+                        attackTimer = 2f;
                         break;
 
                     case EnemyStates.THK_Stage4:
                         canStun = false;
-                        attackTimer = 3.5f;
+                        attackTimer = 2.5f;
                         runSpeed = speed * .5f; // Slow down the boss in stage 4
                         break;
                 }
             }
         }
+        #endregion
 
         protected override void OnCollisionStay2D(Collision2D _other)
         {
             base.OnCollisionStay2D(_other);
         }
 
-        #region Attacking
+        #region Boss Attacks per stage
 
         public void AttackHandler()
         {
@@ -190,11 +212,13 @@ namespace Metroknight
             {
                 if (Vector2.Distance(PlayerController.Instance.transform.position, transform.position) < attackRange)
                 {
-                    StartCoroutine(TripleSlash());
+                    tripleSlashCoroutine = StartCoroutine(TripleSlash());
                 }
                 else
                 {
                     StartCoroutine(Lunge());
+
+                    // Uncomment to test quickly every attacks
                     // StartCoroutine(Lunge());
                     // DiveAttackJump();
                     // BarrageBendDown();
@@ -206,8 +230,7 @@ namespace Metroknight
             {
                 if (Vector2.Distance(PlayerController.Instance.transform.position, transform.position) < attackRange)
                 {
-                    Debug.Log("THK Stage 2 Triple Slash");
-                    StartCoroutine(TripleSlash());
+                    tripleSlashCoroutine = StartCoroutine(TripleSlash());
                 }
                 else
                 {
@@ -218,12 +241,10 @@ namespace Metroknight
                     }
                     else if (_attackChosen == 2)
                     {
-                        Debug.Log("THK Stage 2 Dive Attack Jump");
                         DiveAttackJump();
                     }
                     else if (_attackChosen == 3)
                     {
-                        Debug.Log("THK Stage 2 Barrage Bend Down");
                         BarrageBendDown();
                     }
                 }
@@ -233,22 +254,18 @@ namespace Metroknight
                 int _attackChosen = Random.Range(1, 4);
                 if (_attackChosen == 1)
                 {
-                    Debug.Log("THK Stage 3 Outbreak Bend Down");
                     OutbreakBendDown();
                 }
                 else if (_attackChosen == 2)
                 {
-                    Debug.Log("THK Stage 3 Dive Attack Jump");
                     DiveAttackJump();
                 }
                 else if (_attackChosen == 3)
                 {
-                    Debug.Log("THK Stage 3 Barrage Bend Down");
                     BarrageBendDown();
                 }
                 else if (_attackChosen == 4)
                 {
-                    Debug.Log("THK Stage 3 Bounce Attack");
                     BounceAttack();
                 }
             }
@@ -268,7 +285,7 @@ namespace Metroknight
         public void ResetAllAttacks()
         {
             attacking = false;
-            StopCoroutine(TripleSlash());
+            if (tripleSlashCoroutine != null) StopCoroutine(tripleSlashCoroutine);
             StopCoroutine(Lunge());
             StopCoroutine(Parry());
             StopCoroutine(Slash());
@@ -276,6 +293,7 @@ namespace Metroknight
             barrageAttack = false;
             outbreakAttack = false;
             bounceAttack = false;
+            lunging = false;
 
             // Try fixing jump looping animation when hit while stunned
             animator.SetBool("Jump", false);
@@ -294,81 +312,83 @@ namespace Metroknight
             attacking = true;
             rb.linearVelocity = Vector2.zero;
 
+            if (tripleSlashParticles != null)
+            {
+                tripleSlashParticles.gameObject.SetActive(true);
+                tripleSlashParticles.Play();
+            }
+
+            yield return new WaitForSeconds(tripleSlashParticles.main.duration);
+            tripleSlashParticles.Stop();
+            tripleSlashParticles.gameObject.SetActive(false);
+
             animator.SetTrigger("Slash");
-            SlashAngle();
+            rb.AddForce(new Vector2(facingRight ? 20 : -20, 0), ForceMode2D.Impulse);
+            yield return new WaitForSeconds(0.2f);
+            rb.linearVelocityX = 0;
             yield return new WaitForSeconds(0.3f);
             animator.ResetTrigger("Slash");
 
             animator.SetTrigger("Slash");
-            SlashAngle();
+            rb.AddForce(new Vector2(facingRight ? 30 : -30, 0), ForceMode2D.Impulse);
+            yield return new WaitForSeconds(0.15f);
+            rb.linearVelocityX = 0;
             yield return new WaitForSeconds(0.5f);
             animator.ResetTrigger("Slash");
 
             animator.SetTrigger("Slash");
-            SlashAngle();
+            rb.AddForce(new Vector2(facingRight ? 20 : -20, 0), ForceMode2D.Impulse);
             yield return new WaitForSeconds(0.2f);
+            rb.linearVelocityX = 0;
+            yield return new WaitForSeconds(0.1f);
             animator.ResetTrigger("Slash");
 
+            // Wait for the last slash animation to finish
+            yield return new WaitForSeconds(0.5f);
+
+            rb.linearVelocityX = 0;
             ResetAllAttacks();
         }
 
-        void SlashAngle()
+        public void SlashAngle()
         {
-            if (PlayerController.Instance.transform.position.x > transform.position.x ||
-                PlayerController.Instance.transform.position.x < transform.position.x)
-            {
-                Instantiate(slashEffect, sideAttackTransform);
-            }
-            else if (PlayerController.Instance.transform.position.y > transform.position.y)
-            {
-                SlashEffectAtAngle(slashEffect, 80, upAttackTransform);
-            }
-            else if (PlayerController.Instance.transform.position.y < transform.position.y)
-            {
-                SlashEffectAtAngle(slashEffect, -90, downAttackTransform);
-            }
-        }
-
-        void SlashEffectAtAngle(GameObject _slashEffect, int _effectAngle, Transform _attackTransform)
-        {
-            _slashEffect = Instantiate(_slashEffect, _attackTransform);
-            _slashEffect.transform.eulerAngles = new Vector3(0, 0, _effectAngle);
-            _slashEffect.transform.localScale = new Vector2(transform.localScale.x, transform.localScale.y);
+            Instantiate(slashEffect, sideAttackTransform);
         }
 
         IEnumerator Lunge()
         {
             attacking = true;
-            animator.SetBool("Lunge", true);
-            yield return new WaitForSeconds(1f);
-            animator.SetBool("Lunge", false);
-            damagedPlayer = false;
-            ResetAllAttacks();
+            lunging = true;
+            animator.SetTrigger("LoadingLunge");
+            yield return null;
         }
 
         IEnumerator Parry()
         {
-            parrying = true;
-            rb.linearVelocity = Vector2.zero;
-            animator.SetBool("Parry", true);
-            // Parry lasts 0.75 seconds, so we set 0.8 over there
-            yield return new WaitForSeconds(0.8f);
-            animator.SetBool("Parry", false);
-            parrying = false;
-            ResetAllAttacks();
+            // Parry only one out of 4 times
+            int _randomParry = Random.Range(1, 4);
+
+            if (_randomParry == 1)
+            {
+                rb.linearVelocity = Vector2.zero;
+                parrying = true;
+                animator.SetTrigger("QuickParry");
+                yield return new WaitForSeconds(1);
+                parrying = false;
+                ResetAllAttacks();
+            }
+
+            yield return null;
         }
 
         IEnumerator Slash()
         {
             attacking = true;
             rb.linearVelocity = Vector2.zero;
-
             animator.SetTrigger("Slash");
-            SlashAngle();
-            yield return new WaitForSeconds(0.2f);
+            yield return new WaitForSeconds(0.4f);
             animator.ResetTrigger("Slash");
-
-            ResetAllAttacks();
+            attacking = false;
         }
 
         #region Stage2
@@ -407,7 +427,8 @@ namespace Metroknight
                 Instantiate(pillar, _pillarSpawnPointRight, Quaternion.Euler(0, 0, -90));
                 Instantiate(pillar, _pillarSpawnPointLeft, Quaternion.Euler(0, 0, -90));
 
-                _spawnDistance += 5f; // Increase distance for each pillar
+                // Increase distance for each pillar
+                _spawnDistance += 5f;
             }
             audioSource.PlayOneShot(divingPillarSound, .7f);
             ResetAllAttacks();
@@ -425,6 +446,11 @@ namespace Metroknight
         {
             rb.linearVelocity = Vector2.zero;
             float _currentAngle = 30f; // Starting angle for the barrage
+            if (outbreakParticles != null)
+            {
+                outbreakParticles.gameObject.SetActive(true);
+                outbreakParticles.Play();
+            }
             for (int i = 0; i < 10; i++)
             {
                 GameObject _projectile = Instantiate(barageFireball, transform.position, Quaternion.Euler(0, 0, _currentAngle));
@@ -444,13 +470,12 @@ namespace Metroknight
             }
             yield return new WaitForSeconds(0.1f); // Wait for the barrage to finish
             animator.SetBool("Cast", false);
+            outbreakParticles.Stop();
             ResetAllAttacks();
         }
-
         #endregion
 
         #region Stage3
-
         public void OutbreakBendDown()
         {
             attacking = true;
@@ -523,77 +548,84 @@ namespace Metroknight
             else
             {
                 bounces = 0;
-                // Force boss to run after bouncing the required number of times
-                animator.Play("Boss_Run");
+                // Force boss to idle after bouncing the required number of times
+                animator.Play("Boss_Idle");
             }
         }
-
         #endregion
         #endregion
 
+        #region Hit
         public override void EnemyHit(float _damageDone, Vector2 _hitDirection, float _hitForce)
         {
-            if (!stunned)
-            {
-                if (!parrying)
-                {
-                    if (canStun)
-                    {
-                        hitCounter++;
-                        if (hitCounter >= 8)
-                        {
-                            ResetAllAttacks();
-                            StartCoroutine(Stunned());
-                        }
-                    }
-                    base.EnemyHit(_damageDone, _hitDirection, _hitForce);
-                    if (damageFlash != null) damageFlash.CallDamageFlash();
-                    if (currentEnemyState != EnemyStates.THK_Stage4)
-                    {
-                        // ResetAllAttacks(); // cancel any current attack to avoid bugs
-                        StartCoroutine(Parry());
-                    }
-                }
-                else
-                {
-                    StopCoroutine(Parry());
-                    parrying = false;
-                    // ResetAllAttacks();
-                    PlayerController.Instance.audioSource.PlayOneShot(PlayerController.Instance.parrySound);
-                    StartCoroutine(Slash()); // Riposte
-                }
-            }
-            else
+            // Reset stun effect on boss while being hit again
+            if (stunned)
             {
                 StopCoroutine(Stunned());
                 animator.SetBool("Stunned", false);
                 stunned = false;
             }
 
-            Debug.Log("THK Hit: " + health);
+            // If hit while parrying, play parry sound and ripose
+            if (parrying)
+            {
+                if (parryCoroutine != null)
+                {
+                    StopCoroutine(parryCoroutine);
+                    parryCoroutine = null;
+                }
+                PlayerController.Instance.audioSource.PlayOneShot(PlayerController.Instance.parrySound);
+                parrying = false;
+
+                if (parryParticles != null) parryParticles.Play();
+
+                impulseSource.GenerateImpulse();
+                PlayerController.Instance.HitStopTime(0, 5, .5f);
+                StartCoroutine(Slash()); // Riposte
+                return; // Exit early if parrying
+            }
+
+            if (canStun)
+            {
+                hitCounter++;
+                if (hitCounter >= 12)
+                {
+                    ResetAllAttacks();
+                    StartCoroutine(Stunned());
+                }
+            }
+            base.EnemyHit(_damageDone, _hitDirection, _hitForce);
+            if (damageFlash != null) damageFlash.CallDamageFlash();
+            if (!attacking && !stunned)
+            {
+                if (parryCoroutine != null) StopCoroutine(parryCoroutine);
+                parryCoroutine = StartCoroutine(Parry());
+            }
 
             #region Health to state
-            if (health > 75)
+
+            float _healthRatio = health / maxHealth;
+            if (_healthRatio > .75f)
             {
                 ChangeState(EnemyStates.THK_Stage1);
                 Debug.Log("THK Stage 1");
             }
-            else if (health <= 75 && health > 50)
+            else if (_healthRatio <= .75f && _healthRatio > .5f)
             {
                 ChangeState(EnemyStates.THK_Stage2);
                 Debug.Log("THK Stage 2");
             }
-            else if (health <= 50 && health > 25)
+            else if (_healthRatio <= .5f && _healthRatio > .25f)
             {
                 ChangeState(EnemyStates.THK_Stage3);
                 Debug.Log("THK Stage 3");
             }
-            else if (health <= 25 && health > 0)
+            else if (_healthRatio <= .25f && health > 0f)
             {
                 ChangeState(EnemyStates.THK_Stage4);
                 Debug.Log("THK Stage 4");
             }
-            else if (health <= 0 && alive)
+            else if (_healthRatio <= 0f && alive)
             {
                 Death(0f);
                 Debug.Log("THK Dead");
@@ -625,6 +657,7 @@ namespace Metroknight
             GameManager.Instance.BossKilled();
             SpawnBoss.Instance.isBossDead = true;
         }
+        #endregion
 
         private void OnDrawGizmos()
         {
@@ -644,6 +677,9 @@ namespace Metroknight
             // Draw ground check points
             Gizmos.color = Color.blue;
             Gizmos.DrawRay(groundCheckPoint.position, Vector2.down * groundCheckY);
+
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawLine(transform.position, transform.position + Vector3.right * attackRange);
         }
     }
 }
