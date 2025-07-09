@@ -26,12 +26,15 @@ namespace Metroknight
 
             rb.linearVelocity = new Vector2(_dir * (TheHollowKnight.Instance.speed * 5), 0f);
 
-            if (Vector2.Distance(PlayerController.Instance.transform.position, rb.position) <= TheHollowKnight.Instance.attackRange &&
-                // Check that the player is not above the boss but right in front of it
-                // Go with this for now, might need to adjust later
-                PlayerController.Instance.transform.position.y <= rb.position.y + 0.2f &&
-                PlayerController.Instance.transform.position.y >= rb.position.y - 0.2f &&
-                !TheHollowKnight.Instance.damagedPlayer && !PlayerController.Instance.pState.invincible)
+            float _horizontalDistance = Mathf.Abs(PlayerController.Instance.transform.position.x - rb.position.x);
+            float _verticalDistance = Mathf.Abs(PlayerController.Instance.transform.position.y - rb.position.y);
+
+            if (
+                _horizontalDistance <= TheHollowKnight.Instance.attackRange &&
+                _verticalDistance <= 0.5f &&
+                !TheHollowKnight.Instance.damagedPlayer &&
+                !PlayerController.Instance.pState.invincible
+            )
             {
                 PlayerController.Instance.TakeDamage(TheHollowKnight.Instance.damage);
                 if (PlayerController.Instance.pState.alive)
