@@ -152,6 +152,8 @@ namespace Metroknight
 
             PlayerController.Instance.transform.position = respawnPoint;
             StartCoroutine(UIManager.Instance.DeactivateDeathScreen());
+            audioSource.clip = zoneSound;
+            audioSource.Play();
             PlayerController.Instance.Respawned();
         }
 
